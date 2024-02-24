@@ -1,0 +1,84 @@
+{% extends 'infinite shop/parent/parent.html' %}
+{% load static %}
+{% block title %}
+    درباره ما
+{% endblock %}
+{% block content %}
+    <section class="inner-page" id="contact-page">
+        <div class="container-fluid" id="page-hero">
+            <div class="row">
+                <div class="col-12">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 px-0">
+                                <h1>درباره ما</h1>
+                                <p>با ما بیشتر آشنا شوید.</p>
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="{% url 'IndexApp:index' %}">صفحه نخست</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">درباره ما</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="content">
+                        <div class="row">
+                            <div class="col-12 col-lg-7">
+                                <div class="title">معرفی فروشگاه</div>
+                                <p>{{ site_info.main_description }}</p>
+                            </div>
+                            <div class="col-12 col-lg-5 align-self-center h-100">
+                                <img src="{{ site_info.about_us_picture.url }}" alt="">
+                            </div>
+                        </div>
+                        <!-- Team -->
+                        <div class="row pt-5">
+                            <div class="col-12 text-center pt-4 pb-3">
+                                <h2 class="center-title">تیم ما</h2>
+                                <span class="sub-title">با تیم ما بیشتر آشنا شوید.</span>
+                            </div>
+                            <br>
+                            {% for team_member in team_members %}
+                                <div class="col-12 col-sm-6 col-lg-3">
+                                    <!-- Person Box -->
+                                    <figure class="team-person">
+                                        <div class="profile-image">
+                                            {% if team_member.profile_pic %}
+                                                <img src="{{ team_member.profile_pic.url }}" alt="">
+                                            {% else %}
+                                                <img src="{% static 'images/profile.png' %}" alt="">
+                                            {% endif %}
+                                        </div>
+                                        <figcaption>
+                                            <h3>{{ team_member.fullname }}</h3>
+                                            <h4>{{ team_member.job }}</h4>
+                                            <p>{{ team_member.description }}</p>
+                                            <div class="icons"><a href="#"><i class="ion-social-reddit"></i></a>
+                                                <a href="#"> <i class="ion-social-twitter"></i></a>
+                                                <a href="#"> <i class="ion-social-vimeo"></i></a>
+                                            </div>
+                                        </figcaption>
+                                    </figure>
+                                    <!-- /Person Box -->
+                                </div>
+
+                            {% endfor %}
+
+
+                        </div>
+                        <!-- Team -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
