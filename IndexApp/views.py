@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from IndexApp.models import *
+from ProductsApp.models import Product
 
 
 # Create your views here.

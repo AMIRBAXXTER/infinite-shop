@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     # internal apps
     "IndexApp.apps.IndexAppConfig",
     "UserApp.apps.UserAppConfig",
