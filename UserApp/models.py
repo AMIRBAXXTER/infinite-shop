@@ -10,7 +10,7 @@ class User(AbstractUser):
     profile_image = models.ImageField(blank=True, null=True, verbose_name='تصویر پروفایل')
 
     def __str__(self):
-        return self.username
+        return f'{self.first_name} {self.last_name}'
 
 
 class Province(models.Model):

@@ -11,12 +11,14 @@ def product_detail(request: HttpRequest, product_id):
     blank_star = 5 - avg
     main_category = product.category.filter(parent=None).first()
     product_comments = ProductComment.objects.filter(product=product, parent=None)
+    product_all_comments = ProductComment.objects.filter(product=product)
     context = {
         'product': product,
         'star_range': range(1, (avg + 1)),
         'blank_star': range(1, (blank_star + 1)),
         'main_category': main_category,
-        'product_comments': product_comments
+        'product_comments': product_comments,
+        'product_all_comments': product_all_comments,
 
     }
     return render(request, 'products_app/product_detail.html', context)

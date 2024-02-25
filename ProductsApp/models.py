@@ -121,7 +121,7 @@ class ProductComment(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
 
     def __str__(self):
-        return f'{self.user.username}:{self.product.title}'
+        return f'{self.user.username}:{self.id}'
 
     class Meta:
         verbose_name = 'نظر محصول'

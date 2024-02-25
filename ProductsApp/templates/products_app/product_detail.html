@@ -226,7 +226,7 @@
                                                         onclick="openTab(event,'details-tab')">جدول مشخصات
                                                 </button>
                                                 <button class="tab-item tablink px-3"
-                                                        onclick="openTab(event,'comments-tab')">دیدگاه کاربران (2)
+                                                        onclick="openTab(event,'comments-tab')">دیدگاه کاربران ({{ product_all_comments.count }})
                                                 </button>
                                             </div>
                                         </div>
@@ -331,18 +331,28 @@
                                                                             <!-- Show Comments -->
                                                                             <div class="comment p-3 my-2">
                                                                                 {% for comment in product_comments %}
-                                                                                    <div class="sender-details">
+                                                                                    <div class="sender-details" data-id="{{ comment.id }}">
                                                                                         <div class="row">
                                                                                             <div class="col-3 col-sm-2 col-md-1 pl-md-0 pl-lg-2 pl-xl-3">
+
+                                                                                                {% if comment.user.profile_image %}
+                                                                                                    {% thumbnail comment.user.profile_image '63x63' crop='center' as im %}
+                                                                                                        <img src="{{ im.url }}"
+                                                                                                             alt="{{ im.title }}">
+                                                                                                    {% endthumbnail %}
+                                                                                                {% else %}
+                                                                                                    <img src="{% static 'images/user-no-image.jpg' %}"
+                                                                                                         alt="no-profile">
+                                                                                                {% endif %}
 
                                                                                             </div>
                                                                                             <div class="col-9 col-sm-10 col-md-11 pr-0 pr-md-2 pr-xl-0 pt-0 pt-lg-1">
                                                                                                 <div class="name">
-                                                                                                    {{ comment.user.username }}
+                                                                                                    {{ comment.user }}
                                                                                                 </div>
                                                                                                 <div class="date">ارسال
                                                                                                     شده
-                                                                                                    در 18 تیر 1400
+                                                                                                    در {{ comment.created_at }}
                                                                                                 </div>
                                                                                             </div>
                                                                                             <div class="col-12">
@@ -353,65 +363,46 @@
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                {% empty %}
-
-                                                                                {% endfor %}
-
-
-
-                                                                                <!-- Comment Reply -->
-                                                                                <div class="row justify-content-end">
-                                                                                    <div class="col-11 pt-2 pr-0">
-                                                                                        <div class="comment p-3">
-                                                                                            <div class="sender-details">
-                                                                                                <div class="row">
-                                                                                                    <div class="col-3 col-sm-2 col-md-1 pl-md-0 pl-lg-2 pl-xl-3">
-                                                                                                        <img src="assets/images/user-no-image.jpg"
-                                                                                                             alt=""
-                                                                                                             class="rounded">
-                                                                                                    </div>
-                                                                                                    <div class="col-9 col-sm-10 col-md-11 pr-0 pr-md-2 pr-xl-0 pt-0 pt-lg-1">
-                                                                                                        <div class="name">
-                                                                                                            امین کیانی
+                                                                                    {% for reply in comment.children.all %}
+                                                                                        <div class="row justify-content-end">
+                                                                                            <div class="col-11 pt-2 pr-0">
+                                                                                                <div class="comment p-3">
+                                                                                                    <div class="sender-details">
+                                                                                                        <div class="row">
+                                                                                                            <div class="col-3 col-sm-2 col-md-1 pl-md-0 pl-lg-2 pl-xl-3">
+                                                                                                                {% if reply.user.profile_image %}
+                                                                                                                    {% thumbnail reply.user.profile_image '63x63' crop='center' as im %}
+                                                                                                                        <img src="{{ im.url }}"
+                                                                                                                             alt="{{ im.title }}">
+                                                                                                                    {% endthumbnail %}
+                                                                                                                {% else %}
+                                                                                                                    <img src="{% static 'images/user-no-image.jpg' %}"
+                                                                                                                         alt="no-profile">
+                                                                                                                {% endif %}
+                                                                                                            </div>
+                                                                                                            <div class="col-9 col-sm-10 col-md-11 pr-0 pr-md-2 pr-xl-0 pt-0 pt-lg-1">
+                                                                                                                <div class="name">
+                                                                                                                    {{ reply.user }}
+                                                                                                                </div>
+                                                                                                                <div class="date">
+                                                                                                                    ارسال
+                                                                                                                    شده
+                                                                                                                    در
+                                                                                                                    {{ reply.created_at }}
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <div class="col-12">
+                                                                                                                <p>{{ reply.comment }}</p>
+                                                                                                            </div>
                                                                                                         </div>
-                                                                                                        <div class="date">
-                                                                                                            ارسال شده در
-                                                                                                            18 تیر 1400
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                    <div class="col-12">
-                                                                                                        <p>صفحات و
-                                                                                                            محتوای
-                                                                                                            آزمایشی
-                                                                                                            همیشه بخشی
-                                                                                                            از محتوای
-                                                                                                            پیش‌نمایش
-                                                                                                            قالب و
-                                                                                                            افزونه های
-                                                                                                            وب هستند که
-                                                                                                            شما بتوانید
-                                                                                                            ارتباط درستی
-                                                                                                            با پیش نمایش
-                                                                                                            قالب گرفته و
-                                                                                                            تصمیم مناسبی
-                                                                                                            بگیرید. این
-                                                                                                            صفحات معمولا
-                                                                                                            برای اطلاعات
-                                                                                                            کلی در مورد
-                                                                                                            سایت مثل
-                                                                                                            «درباره ما»،
-                                                                                                            «تماس با
-                                                                                                            ما»، «فهرست»
-                                                                                                            یا «نظرات
-                                                                                                            شما» مفید
-                                                                                                            هستند.</p>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <!-- /Comment Reply -->
+                                                                                    {% endfor %}
+                                                                                {% empty %}
+
+                                                                                {% endfor %}
                                                                             </div>
                                                                             <!-- /Show Comments -->
                                                                         </div>
