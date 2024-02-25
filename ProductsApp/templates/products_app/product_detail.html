@@ -25,7 +25,7 @@
                                     <ol class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html">صفحه نخست</a></li>
                                         <li class="breadcrumb-item"><a href="products.html">فروشگاه</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">گوشی موبایل</li>
+                                        <li class="breadcrumb-item active" aria-current="page">{{ product.category.title }}</li>
                                     </ol>
                                 </nav>
                             </div>
@@ -129,9 +129,15 @@
                                 <div class="encode4365gbf265g43d-container py-2">
                                     <span class="pre-encode4365gbf265g43d">{{ product.price|intcomma:False }}</span>
                                     <span class="encode4365gbf265g43d">{{ product.final_price|intcomma:False }} <span>تومان</span></span>
-                                    <div class="badge badge-danger font-weight-light m-1 py-1 px-2">10%</div>
+                                    <div class="bg-danger m-auto d-inline-block rounded-circle p-1 text-light ">10%</div>
                                 </div>
                                 <p>{{ product.long_description|linebreaks }}</p>
+                                <div>
+                                    <span>برند :</span>
+                                    <span>{{ product.brand.title }}</span>
+                                    <img src="{{ product.brand.brand_image.url }}" alt="{{ product.brand.title }}">
+                                </div>
+
                                 <hr>
                                 <div class="variables">
                                     <div class="title">گزینه های موجود:</div>
@@ -140,7 +146,7 @@
                                             <div class="variable">
                                                 <div class="sub-title pt-2 pb-3">رنگ</div>
                                                 {% for color in product.color_of_product.all %}
-                                                    <span class="color-variable"><a href="#"
+                                                    <span class="color-variable rounded-circle"><a class="rounded-circle" href="#" title="{{ color.title }}"
                                                                                     style="background-color: {{ color.color }}"></a></span>
                                                     {% if forloop.counter|divisibleby:4 %}
                                                         <br><br>
@@ -175,11 +181,11 @@
                                                 </div>
                                             </a>
                                             <br class="d-sm-none">
-                                            <div class="btn btn-outline-secondary encode43243d mt-1 mt-sm-0"
+                                            <div class="btn bi bi-heart mt-1 mt-sm-0"
                                                  data-toggle="tooltip" data-placement="top"
                                                  title="افزودن به علاقه‌مندی"></div>
                                             <a href="#">
-                                                <div class="btn btn-outline-secondary encode43bf243d mt-1 mt-sm-0"
+                                                <div class="btn bi bi-book-half mt-1 mt-sm-0"
                                                      data-toggle="tooltip" data-placement="top" title="مقایسه"></div>
                                             </a>
                                         </div>

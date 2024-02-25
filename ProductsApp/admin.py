@@ -5,6 +5,11 @@ from ProductsApp.models import *
 
 # Register your models here.
 
+class ProductPropertyInline(admin.TabularInline):
+    model = ProductProperty
+    extra = 0
+
+
 class ProductRateInline(admin.TabularInline):
     model = ProductRate
     extra = 0
@@ -34,3 +39,18 @@ class ProductAdmin(admin.ModelAdmin):
         ProductRateInline,
         ProductCommentInline,
     ]
+
+
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    list_display = ('title', 'brand_image')
+
+
+@admin.register(ProductProperty)
+class ProductPropertyAdmin(admin.ModelAdmin):
+    list_display = ('title', 'product', 'value')
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('title', 'parent')
