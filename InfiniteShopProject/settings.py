@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "IndexApp.apps.IndexAppConfig",
     "UserApp.apps.UserAppConfig",
     # external apps
-    'thumbnails',
+    'sorl.thumbnail',
     'django_resized',
     'django_render_partial',
     "ProductsApp.apps.ProductsAppConfig"

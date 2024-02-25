@@ -1,5 +1,6 @@
 {% extends 'infinite shop/parent/parent.html' %}
 {% load static %}
+{% load thumbnail %}
 {% load humanize %}
 {% block header %}
     <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
@@ -23,9 +24,10 @@
                                 <p>{{ product.short_description }}</p>
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="index.html">صفحه نخست</a></li>
+                                        <li class="breadcrumb-item"><a href="{% url 'IndexApp:index' %}">صفحه نخست</a>
+                                        </li>
                                         <li class="breadcrumb-item"><a href="products.html">فروشگاه</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">{{ product.category.title }}</li>
+                                        <li class="breadcrumb-item active" aria-current="page">{{ main_category }}</li>
                                     </ol>
                                 </nav>
                             </div>
@@ -118,7 +120,7 @@
                                     {% with product.average_rate as rate %}
                                         <span>{{ rate }}</span>
                                         {% for i in blank_star %}
-                                            <i class="ion-ios-star-outline"></i>
+                                            <i class="bi bi-star"></i>
                                         {% endfor %}
                                         {% for i in star_range %}
                                             <i class="fa fa-star"></i>
@@ -129,7 +131,7 @@
                                 <div class="encode4365gbf265g43d-container py-2">
                                     <span class="pre-encode4365gbf265g43d">{{ product.price|intcomma:False }}</span>
                                     <span class="encode4365gbf265g43d">{{ product.final_price|intcomma:False }} <span>تومان</span></span>
-                                    <div class="bg-danger m-auto d-inline-block rounded-circle p-1 text-light ">10%</div>
+                                    <div class="bg-danger m-auto d-inline-block rounded-circle p-1 text-light ">{{ product.off_percent }}%</div>
                                 </div>
                                 <p>{{ product.long_description|linebreaks }}</p>
                                 <div>
@@ -146,8 +148,9 @@
                                             <div class="variable">
                                                 <div class="sub-title pt-2 pb-3">رنگ</div>
                                                 {% for color in product.color_of_product.all %}
-                                                    <span class="color-variable rounded-circle"><a class="rounded-circle" href="#" title="{{ color.title }}"
-                                                                                    style="background-color: {{ color.color }}"></a></span>
+                                                    <span class="color-variable rounded-circle"><a
+                                                            class="rounded-circle" href="#" title="{{ color.title }}"
+                                                            style="background-color: {{ color.color }}"></a></span>
                                                     {% if forloop.counter|divisibleby:4 %}
                                                         <br><br>
                                                     {% endif %}
@@ -160,7 +163,7 @@
                                                 <select name="" class="form-select">
                                                     <option value="">بدون گارانتی</option>
                                                     <option value="">گارانتی 6 ماهه</option>
-                                                    <option value="">گارانت 12 ماهه</option>
+                                                    <option value="">گارانتی 12 ماهه</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -195,15 +198,16 @@
                                 <div class="pt-5" id="share-links">
                                     <span>اشتراک گذاری: </span>
                                     <a href="#" target="_blank"><span class="share-link"><img
-                                            src="assets/images/social/twitter.png" alt="توئیتر" width="18px"></span></a>
-                                    <a href="#" target="_blank"><span class="share-link"><img
-                                            src="assets/images/social/insta.png" alt="اینستاگرام"
+                                            src="{% static 'images/social/twitter.png' %}" alt="توئیتر"
                                             width="18px"></span></a>
                                     <a href="#" target="_blank"><span class="share-link"><img
-                                            src="assets/images/social/linkedin.png" alt="لینکدین"
+                                            src="{% static 'images/social/insta.png' %}" alt="اینستاگرام"
                                             width="18px"></span></a>
                                     <a href="#" target="_blank"><span class="share-link"><img
-                                            src="assets/images/social/facebook.png" alt="فیس بوک"
+                                            src="{% static 'images/social/linkedin.png' %}" alt="لینکدین"
+                                            width="18px"></span></a>
+                                    <a href="#" target="_blank"><span class="share-link"><img
+                                            src="{% static 'images/social/facebook.png' %}" alt="فیس بوک"
                                             width="18px"></span></a>
                                 </div>
                                 <!-- Share Links -->
@@ -326,37 +330,34 @@
                                                                         <div class="col-12 pt-2">
                                                                             <!-- Show Comments -->
                                                                             <div class="comment p-3 my-2">
-                                                                                <div class="sender-details">
-                                                                                    <div class="row">
-                                                                                        <div class="col-3 col-sm-2 col-md-1 pl-md-0 pl-lg-2 pl-xl-3">
-                                                                                            <img src="assets/images/user-no-image.jpg"
-                                                                                                 alt="" class="rounded">
-                                                                                        </div>
-                                                                                        <div class="col-9 col-sm-10 col-md-11 pr-0 pr-md-2 pr-xl-0 pt-0 pt-lg-1">
-                                                                                            <div class="name">مصطفی
-                                                                                                کلانتری
+                                                                                {% for comment in product_comments %}
+                                                                                    <div class="sender-details">
+                                                                                        <div class="row">
+                                                                                            <div class="col-3 col-sm-2 col-md-1 pl-md-0 pl-lg-2 pl-xl-3">
+
                                                                                             </div>
-                                                                                            <div class="date">ارسال شده
-                                                                                                در 18 تیر 1400
+                                                                                            <div class="col-9 col-sm-10 col-md-11 pr-0 pr-md-2 pr-xl-0 pt-0 pt-lg-1">
+                                                                                                <div class="name">
+                                                                                                    {{ comment.user.username }}
+                                                                                                </div>
+                                                                                                <div class="date">ارسال
+                                                                                                    شده
+                                                                                                    در 18 تیر 1400
+                                                                                                </div>
                                                                                             </div>
-                                                                                        </div>
-                                                                                        <div class="col-12">
-                                                                                            <p>این یک متن آزمایشی است که
-                                                                                                به زودی توسط نویسنده این
-                                                                                                سایت، تکمیل یا حذف خواهد
-                                                                                                شد. اگر شما نویسنده‌ی
-                                                                                                این سایت هستید، برای حذف
-                                                                                                یا ویرایش این صفحه، کافی
-                                                                                                است از طریق مرکز مدیریت
-                                                                                                سایت خود وارد بخش مربوطه
-                                                                                                شده و محتوای این صفحه را
-                                                                                                ویرایش یا حذف کنید.</p>
-                                                                                            <span class="reply"><img
-                                                                                                    src="assets/images/comment-reply.png"
-                                                                                                    alt=""> ارسال پاسخ</span>
+                                                                                            <div class="col-12">
+                                                                                                <p>{{ comment.comment }}</p>
+                                                                                                <span class="reply"><img
+                                                                                                        src="{% static 'images/comment-reply.png' %}"
+                                                                                                        alt=""> ارسال پاسخ</span>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
+                                                                                {% empty %}
+
+                                                                                {% endfor %}
+
+
 
                                                                                 <!-- Comment Reply -->
                                                                                 <div class="row justify-content-end">

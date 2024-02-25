@@ -144,7 +144,7 @@ class ProductFavorite(models.Model):
 
 class ProductColor(models.Model):
     title = models.CharField(max_length=50, verbose_name='عنوان')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='color_of_product',
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_color',
                                 verbose_name='محصول')
     color = models.CharField(max_length=50, verbose_name='رنگ')
     stock = models.PositiveIntegerField(verbose_name='موجودی')

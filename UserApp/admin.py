@@ -12,7 +12,7 @@ class AddressInline(admin.TabularInline):
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email')
-    fields = ('username', 'first_name', 'last_name', 'email', 'password')
+    fields = ('username', 'first_name', 'last_name', 'email', 'password', 'profile_image')
     inlines = [
         AddressInline
     ]

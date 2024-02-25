@@ -7,6 +7,7 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     email = models.EmailField(null=True, blank=True, verbose_name='ایمیل')
     phone = models.CharField(max_length=11, null=True, blank=True, verbose_name='شماره تماس')
+    profile_image = models.ImageField(blank=True, null=True, verbose_name='تصویر پروفایل')
 
     def __str__(self):
         return self.username
