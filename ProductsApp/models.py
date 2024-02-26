@@ -123,6 +123,13 @@ class ProductRate(models.Model):
     def __str__(self):
         return f'{self.user.username}:{self.product.title}:{self.rate}'
 
+    def save(self, *args, **kwargs):
+        if self.user in self.product.rate.all():
+            self.product.rate.remove(self.user)
+        super(ProductRate, self).save(*args, **kwargs)
+
+
+
     class Meta:
         verbose_name = 'امتیاز محصول'
         verbose_name_plural = 'امتیاز محصول ها'

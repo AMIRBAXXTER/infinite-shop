@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
 from django.shortcuts import render
 from django.views.generic import ListView
@@ -15,7 +16,7 @@ def product_detail(request: HttpRequest, product_id):
     avg = int(product.average_rate)
     blank_star = 5 - avg
     main_category = product.category.filter(parent=None).first()
-    product_comments = ProductComment.objects.filter(product=product, parent=None)
+    product_comments = ProductComment.objects.filter(product=product, parent=None).order_by('-created_at')
     product_all_comments = ProductComment.objects.filter(product=product)
     product_color = ProductColor.objects.filter(product=product).first()
     product_properties = ProductProperty.objects.filter(product=product)
@@ -38,10 +39,40 @@ def product_list(request: HttpRequest):
     site_info = SiteInfo.objects.filter(is_active=True).first()
     main_category = Category.objects.filter(parent=None).all()
 
-
     context = {
         'products': products,
         'site_info': site_info,
         'main_category': main_category,
     }
     return render(request, 'products_app/product_list.html', context)
+
+
+def color_stock(request: HttpRequest):
+    product_id = request.GET.get('product_id')
+    product_color = request.GET.get('product_color')
+    product = Product.objects.filter(id=product_id).first()
+    stock = ProductColor.objects.filter(product=product, color=product_color).first()
+    response = {
+        'stock': stock.stock,
+        'title': stock.title,
+        'color': stock.color,
+    }
+    return JsonResponse(response)
+
+
+@login_required
+def product_comment(request: HttpRequest):
+    product_id = request.GET.get('product_id')
+    product = Product.objects.filter(id=product_id).first()
+    comment = request.GET.get('comment')
+    user = request.user
+    parent_id = request.GET.get('parent')
+    parent = ProductComment.objects.filter(id=parent_id).first() if parent_id else None
+    new_comment = ProductComment(product=product, user=user, comment=comment, parent=parent)
+    new_comment.save()
+    comments = ProductComment.objects.filter(product=product, parent=None).order_by('-created_at')
+
+    context = {
+        'product_comments': comments
+    }
+    return render(request, 'partials/comments_partial.html', context)

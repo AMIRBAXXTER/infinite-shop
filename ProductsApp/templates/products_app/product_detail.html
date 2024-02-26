@@ -13,7 +13,7 @@
     جزِِییات محصول
 {% endblock %}
 {% block content %}
-    <section class="inner-page" id="product-page">
+    <section class="inner-page" id="product-page" data-id="{{ product.id }}">
         <div class="container-fluid" id="page-hero">
             <div class="row">
                 <div class="col-12">
@@ -148,8 +148,11 @@
                                             <div class="variable">
                                                 <div class="sub-title pt-2 pb-3">رنگ</div>
                                                 {% for color in product.product_color.all %}
-                                                    <span class="color-variable rounded-circle"><a
-                                                            class="rounded-circle" href="#" title="{{ color.title }}"
+                                                    <span class="color-variable rounded-circle"
+                                                          data-color="{{ color.color }}"><a
+                                                            class="rounded-circle"
+                                                            onclick="colorStock({{ product.id }})" href="#"
+                                                            title="{{ color.title }}"
                                                             style="background-color: {{ color.color }}"></a></span>
                                                     {% if forloop.counter|divisibleby:4 %}
                                                         <br><br>
@@ -169,7 +172,9 @@
                                 </div>
                                 <span class="border-2 border p-2">موجودی محصول : {{ product.stock }}</span>
                                 <span class="border-2 border p-2">موجودی رنگ <span
-                                        style="color: {{ product_color.color }}">{{ product_color.title }}</span> : {{ product_color.stock }}</span>
+                                        class="fw-bolder" id="color-title"
+                                        style="color: {{ product_color.color }}">{{ product_color.title }}</span> : <span
+                                        id="color-stock">{{ product_color.stock }}</span></span>
                                 <div class="cta-container pt-3 pt-md-5">
                                     <div class="row">
                                         <div class="col-12">
@@ -214,7 +219,7 @@
                                     <div class="row pt-3 px-md-3">
                                         <div class="col-12">
                                             <div id="tabs-panel">
-                                                <button class="tab-item tablink px-3 selected"
+                                                <button class="tab-item tablink px-3 selected" id="comment-start"
                                                         onclick="openTab(event,'html-tab')">نقد و بررسی
                                                 </button>
                                                 <button class="tab-item tablink px-3"
@@ -261,15 +266,17 @@
                                                 <div id="comments-tab" class="tabs-container px-0 px-md-3 pb-0 pb-md-2"
                                                      style="display:none">
                                                     <div class="row">
-                                                        <div class="col-12 text-justify" id="comments">
+                                                        <div class="col-12 text-justify">
                                                             <div class="comments-container">
                                                                 <div class="container px-0">
                                                                     <div class="row">
                                                                         <div class="col-12 pt-2">
                                                                             <!-- Show Comments -->
-                                                                            <div class="comment p-3 my-2">
+                                                                            <div class="comment p-3 my-2"
+                                                                                 id="comments-cont">
                                                                                 {% for comment in product_comments %}
-                                                                                    <div class="sender-details"
+                                                                                    <div id="comment-box{{ comment.id }}"
+                                                                                         class="sender-details"
                                                                                          data-id="{{ comment.id }}">
                                                                                         <div class="row">
                                                                                             <div class="col-3 col-sm-2 col-md-1 pl-md-0 pl-lg-2 pl-xl-3">
@@ -296,14 +303,16 @@
                                                                                             </div>
                                                                                             <div class="col-12">
                                                                                                 <p>{{ comment.comment }}</p>
-                                                                                                <span class="reply"><img
+                                                                                                <span class="reply"
+                                                                                                      onclick="setParentId({{ comment.id }})"><img
                                                                                                         src="{% static 'images/comment-reply.png' %}"
                                                                                                         alt=""> ارسال پاسخ</span>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     {% for reply in comment.children.all %}
-                                                                                        <div class="row justify-content-end">
+                                                                                        <div id="comment-box{{ reply.id }}"
+                                                                                             class="row justify-content-end">
                                                                                             <div class="col-11 pt-2 pr-0">
                                                                                                 <div class="comment p-3">
                                                                                                     <div class="sender-details">
@@ -340,7 +349,8 @@
                                                                                         </div>
                                                                                     {% endfor %}
                                                                                 {% empty %}
-
+                                                                                    <h3>اولین نفری باشید که دیدگاه خود
+                                                                                        را ارسال میکند.</h3>
                                                                                 {% endfor %}
                                                                             </div>
                                                                             <!-- /Show Comments -->
@@ -351,7 +361,7 @@
 
                                                             <!-- Send Comment Form -->
                                                             <div class="comments-container">
-                                                                <div class="row pt-4">
+                                                                <div class="row pt-4" id="for-view">
                                                                     <div class="col-12"><h2>دیدگاه خود را ارسال
                                                                         کنید</h2></div>
                                                                 </div>
@@ -360,40 +370,27 @@
                                                                         <form method="post"
                                                                               action="https://rubik-market-html.wbrk.ir/">
                                                                             <div id="send-comment-form">
-                                                                                <p>نظر خود را برای این مطلب ارسال کنید.
-                                                                                    نشانی ایمیل شما منتشر نخواهد شد.</p>
+                                                                                <p>نظر خود را برای این محصول ارسال کنید.
+                                                                                </p>
+                                                                                <input type="hidden" value=""
+                                                                                       id="parent-id">
                                                                                 <div class="row">
-                                                                                    <div class="col-12 px-3 pl-md-1 col-md-6">
-                                                                                        <div class="form-group my-1">
-                                                                                            <input type="text"
-                                                                                                   class="form-control"
-                                                                                                   placeholder="* نام شما"
-                                                                                                   required
-                                                                                                   oninvalid="this.setCustomValidity('لطفا نام خود را وارد کنید')"
-                                                                                                   oninput="setCustomValidity('')">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-12 px-3 pr-md-1 col-md-6">
-                                                                                        <div class="form-group my-1">
-                                                                                            <input type="email"
-                                                                                                   class="form-control text-start"
-                                                                                                   placeholder="پست الکترونیک *"
-                                                                                                   required
-                                                                                                   oninvalid="this.setCustomValidity('لطفا پست الکترونیک خود را وارد کنید')"
-                                                                                                   oninput="setCustomValidity('')">
-                                                                                        </div>
-                                                                                    </div>
+
                                                                                     <div class="col-12">
                                                                                         <div class="form-group my-1">
                                                                                             <textarea
                                                                                                     class="form-control"
-                                                                                                    id="" rows="4"
+                                                                                                    style="height: 250px"
+                                                                                                    id="comment-text"
+                                                                                                    rows="4"
                                                                                                     placeholder="متن دیدگاه"></textarea>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-12">
                                                                                         <div class="form-group my-1">
                                                                                             <input type="submit"
+                                                                                                   onclick="addComment({{ product.id }})"
+                                                                                                   id="comment-submit"
                                                                                                    value="ارسال دیدگاه"
                                                                                                    class="btn btn-success px-5">
                                                                                         </div>
