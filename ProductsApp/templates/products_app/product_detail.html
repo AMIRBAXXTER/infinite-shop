@@ -131,7 +131,7 @@
                                 <div class="encode4365gbf265g43d-container py-2">
                                     <span class="pre-encode4365gbf265g43d">{{ product.price|intcomma:False }}</span>
                                     <span class="encode4365gbf265g43d">{{ product.final_price|intcomma:False }} <span>تومان</span></span>
-                                    <div class="bg-danger m-auto d-inline-block rounded-circle p-1 text-light ">{{ product.off_percent }}%</div>
+                                    <div class="bg-danger m-auto d-inline-block px-1 rounded-2 text-light">{{ product.off_percent }}%</div>
                                 </div>
                                 <p>{{ product.long_description|linebreaks }}</p>
                                 <div>
@@ -147,7 +147,7 @@
                                         <div class="col-12 col-sm-4 col-lg-3">
                                             <div class="variable">
                                                 <div class="sub-title pt-2 pb-3">رنگ</div>
-                                                {% for color in product.color_of_product.all %}
+                                                {% for color in product.product_color.all %}
                                                     <span class="color-variable rounded-circle"><a
                                                             class="rounded-circle" href="#" title="{{ color.title }}"
                                                             style="background-color: {{ color.color }}"></a></span>
@@ -157,16 +157,7 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                        <div class="col-12 col-sm-4 col-lg-3">
-                                            <div class="variable">
-                                                <div class="sub-title pt-2 pb-2">گارانتی</div>
-                                                <select name="" class="form-select">
-                                                    <option value="">بدون گارانتی</option>
-                                                    <option value="">گارانتی 6 ماهه</option>
-                                                    <option value="">گارانتی 12 ماهه</option>
-                                                </select>
-                                            </div>
-                                        </div>
+
                                         <div class="col-12 col-sm-4 col-lg-3">
                                             <div class="variable">
                                                 <div class="sub-title pt-2 pb-2">تعداد</div>
@@ -174,7 +165,11 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <br>
                                 </div>
+                                <span class="border-2 border p-2">موجودی محصول : {{ product.stock }}</span>
+                                <span class="border-2 border p-2">موجودی رنگ <span
+                                        style="color: {{ product_color.color }}">{{ product_color.title }}</span> : {{ product_color.stock }}</span>
                                 <div class="cta-container pt-3 pt-md-5">
                                     <div class="row">
                                         <div class="col-12">
@@ -226,7 +221,8 @@
                                                         onclick="openTab(event,'details-tab')">جدول مشخصات
                                                 </button>
                                                 <button class="tab-item tablink px-3"
-                                                        onclick="openTab(event,'comments-tab')">دیدگاه کاربران ({{ product_all_comments.count }})
+                                                        onclick="openTab(event,'comments-tab')">دیدگاه کاربران
+                                                    ({{ product_all_comments.count }})
                                                 </button>
                                             </div>
                                         </div>
@@ -244,78 +240,20 @@
                                                 <!-- Details Tab -->
                                                 <div id="details-tab" class="tabs-container px-0 px-md-3 pb-0 pb-md-3"
                                                      style="display:none">
-                                                    <!-- Detail Section -->
-                                                    <div class="row">
-                                                        <div class="col-12 my-2">
-                                                            <span class="detail-title"><i
-                                                                    class="fa fa-chevron-left small"></i> مشخصات کلی</span>
-                                                        </div>
-                                                    </div>
                                                     <div class="row mb-2">
-                                                        <div class="col-12 col-md-3 font-weight-bold">
-                                                            <div class="bg-light p-2">طول</div>
-                                                        </div>
-                                                        <div class="col-12 col-md-9 pr-md-0">
-                                                            <div class="bg-light p-2">32 سانتی متر</div>
-                                                        </div>
+                                                        {% for property in product_properties %}
+                                                            <div class="col-12 col-md-3 font-weight-bold">
+                                                                <div class="bg-light p-2">{{ property.title }}</div>
+                                                            </div>
+                                                            <div class="col-12 col-md-9 pr-md-0">
+                                                                <div class="bg-light p-2">{{ property.value }}</div>
+                                                            </div>
+                                                        {% empty %}
+
+                                                        {% endfor %}
+
+
                                                     </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-12 col-md-3 font-weight-bold">
-                                                            <div class="bg-light p-2">عرض</div>
-                                                        </div>
-                                                        <div class="col-12 col-md-9 pr-md-0">
-                                                            <div class="bg-light p-2">15 سانتی متر</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-12 col-md-3 font-weight-bold">
-                                                            <div class="bg-light p-2">ارتفاع</div>
-                                                        </div>
-                                                        <div class="col-12 col-md-9 pr-md-0">
-                                                            <div class="bg-light p-2">25 سانتی متر</div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- /Detail Section -->
-                                                    <!-- Detail Section -->
-                                                    <div class="row">
-                                                        <div class="col-12 my-2">
-                                                            <span class="detail-title"><i
-                                                                    class="fa fa-chevron-left small"></i> صفحه نمایش</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-12 col-md-3 font-weight-bold">
-                                                            <div class="bg-light p-2">صفحه نمایش رنگی</div>
-                                                        </div>
-                                                        <div class="col-12 col-md-9 pr-md-0">
-                                                            <div class="bg-light p-2">بله</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-12 col-md-3 font-weight-bold">
-                                                            <div class="bg-light p-2">صفحه نمایش لمسی</div>
-                                                        </div>
-                                                        <div class="col-12 col-md-9 pr-md-0">
-                                                            <div class="bg-light p-2">بله</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-12 col-md-3 font-weight-bold">
-                                                            <div class="bg-light p-2">بازه‌ی اندازه صفحه نمایش</div>
-                                                        </div>
-                                                        <div class="col-12 col-md-9 pr-md-0">
-                                                            <div class="bg-light p-2">6.0 اینچ و بزرگتر</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-12 col-md-3 font-weight-bold">
-                                                            <div class="bg-light p-2">نسبت صفحه‌نمایش به بدنه</div>
-                                                        </div>
-                                                        <div class="col-12 col-md-9 pr-md-0">
-                                                            <div class="bg-light p-2">87.4 درصد</div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- /Detail Section -->
                                                 </div>
                                                 <!-- /Details Tab -->
 
@@ -331,7 +269,8 @@
                                                                             <!-- Show Comments -->
                                                                             <div class="comment p-3 my-2">
                                                                                 {% for comment in product_comments %}
-                                                                                    <div class="sender-details" data-id="{{ comment.id }}">
+                                                                                    <div class="sender-details"
+                                                                                         data-id="{{ comment.id }}">
                                                                                         <div class="row">
                                                                                             <div class="col-3 col-sm-2 col-md-1 pl-md-0 pl-lg-2 pl-xl-3">
 

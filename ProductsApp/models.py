@@ -1,5 +1,6 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils.html import format_html
 from django_resized import ResizedImageField
 
 from UserApp.models import User
@@ -91,6 +92,22 @@ class ProductImage(models.Model):
     image = ResizedImageField(upload_to='product_images/', blank=True, null=True, verbose_name='تصویر')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_images', verbose_name='محصول')
     is_main = models.BooleanField(default=False, verbose_name=' تصویر اصلی')
+
+    class Meta:
+        verbose_name = 'تصویر محصول'
+        verbose_name_plural = 'تصویر های محصول'
+
+    def save(self, *args, **kwargs):
+        if self.is_main:
+            ProductImage.objects.exclude(pk=self.id).update(is_main=False)
+        super(ProductImage, self).save(*args, **kwargs)
+
+    def image_preview(self):
+        return format_html(' <img src="{0}" width="150" height="150">'.format(self.image.url))
+        # return f'<img src="{self.image.url}" width="100" height="100">'
+
+    image_preview.short_description = 'تصویر'
+    image_preview.allow_tags = True
 
     def __str__(self):
         return self.title

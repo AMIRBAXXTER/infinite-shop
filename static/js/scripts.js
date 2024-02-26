@@ -5,12 +5,12 @@ $(function() {
 
         noUiSlider.create(slider, {
             direction: 'rtl',
-            start: [0, 5000000],
+            start: [0, 10000],
             connect: true,
-            step: 50000,
+            step: 1,
             range: {
                 'min': 0,
-                'max': 5000000
+                'max': 10000
             }
         });
 
