@@ -1,5 +1,6 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.html import format_html
 from django_resized import ResizedImageField
 
@@ -13,6 +14,7 @@ class Category(models.Model):
     title = models.CharField(max_length=50, verbose_name='عنوان')
     parent = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='children', blank=True, null=True,
                                verbose_name='والد')
+
 
     def __str__(self):
         return self.title
@@ -58,6 +60,9 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolut_url(self):
+        return reverse('ProductsApp:product_detail', args=[self.id])
+
     class Meta:
         indexes = [
             models.Index(fields=['price']),
@@ -99,7 +104,7 @@ class ProductImage(models.Model):
 
     def save(self, *args, **kwargs):
         if self.is_main:
-            ProductImage.objects.exclude(pk=self.id).update(is_main=False)
+            ProductImage.objects.filter(product=self.product).exclude(id=self.id).update(is_main=False)
         super(ProductImage, self).save(*args, **kwargs)
 
     def image_preview(self):
@@ -127,8 +132,6 @@ class ProductRate(models.Model):
         if self.user in self.product.rate.all():
             self.product.rate.remove(self.user)
         super(ProductRate, self).save(*args, **kwargs)
-
-
 
     class Meta:
         verbose_name = 'امتیاز محصول'

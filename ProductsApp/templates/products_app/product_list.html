@@ -216,20 +216,13 @@
                                         <div class="row">
                                             <div class="col-12 col-sm-10 my-1">
                                                 <span class="d-block d-sm-inline-block">مرتب سازی بر اساس:</span>
-                                                <span class="order-filter d-block d-sm-inline-block active">جدیدترین</span>
-                                                <span class="order-filter d-block d-sm-inline-block">پربازدیدترین</span>
-                                                <span class="order-filter d-block d-sm-inline-block">پرفروش‌ترین</span>
-                                                <span class="order-filter d-block d-sm-inline-block">ارزان‌ترین</span>
+                                                <span onclick="orderProducts('order', '-created-at')" class="order-filter d-block d-sm-inline-block active">جدیدترین</span>
+                                                <span onclick="orderProducts()" class="order-filter d-block d-sm-inline-block">پربازدیدترین</span>
+                                                <span onclick="orderProducts()" class="order-filter d-block d-sm-inline-block">پرفروش‌ترین</span>
+                                                <span onclick="orderProducts()" class="order-filter d-block d-sm-inline-block">ارزان‌ترین</span>
                                             </div>
                                             <div class="col-12 col-sm-2 pt-1 text-end">
-                                            <span>
-                                                <a href="products-list.html" class="products-view-type"><i
-                                                        class="fa fa-th-list"></i></a>
-                                                <a href="products.html" class="products-view-type active"><i
-                                                        class="fa fa-th"></i></a>
-                                            </span>
-                                                &nbsp;|&nbsp;
-                                                <span>122 کالا</span>
+                                                <span>{{ products.count }} کالا</span>
                                             </div>
                                         </div>
                                     </div>
@@ -249,9 +242,13 @@
                                                         </a>
                                                         <div class="details p-3">
                                                             <div class="category">
-                                                                <a href="products.html">گوشی موبایل</a>
-                                                                &nbsp;/&nbsp;
-                                                                <a href="products.html">سامسونگ</a>
+                                                                {% for category in product.category.all %}
+                                                                    <span>{{ category.title }}</span>
+                                                                {% endfor %}
+
+
+
+
                                                             </div>
                                                             <a href="{% url 'ProductsApp:product_detail' product.id %}">
                                                                 <h2>{{ product.title }}</h2></a>
@@ -260,12 +257,7 @@
                                                             <div class="fs-4 encode4365gbf265g43d">{{ product.final_price|intcomma:False }}<span
                                                                     class="fs-6">  تومان</span></div>
                                                             <div class="rate">
-                                                                <i class="fa fa-star-half-alt"></i>
-                                                                <i class="fa fa-star"></i>
-                                                                <i class="fa fa-star"></i>
-                                                                <i class="fa fa-star"></i>
-                                                                <i class="fa fa-star"></i>
-                                                                <span class="encode43bf265g43d">(14 رای دهنده)</span>
+                                                                <span class="encode43bf265g43d">({{ product.comment.count }} نظر)</span>
                                                             </div>
                                                         </div>
                                                     </div>

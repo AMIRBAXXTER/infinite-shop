@@ -1957,3 +1957,6 @@ img {
 /* /Boxes */
 
 /*# sourceMappingURL=style.css.map */
+.send-reply {
+  cursor: pointer;
+}

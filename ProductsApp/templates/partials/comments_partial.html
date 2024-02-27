@@ -1,7 +1,8 @@
 {% load static %}
 {% load thumbnail %}
 {% for comment in product_comments %}
-    <div id="comment-box{{ comment.id }}" class="sender-details"
+    <div id="comment-box{{ comment.id }}"
+         class="sender-details"
          data-id="{{ comment.id }}">
         <div class="row">
             <div class="col-3 col-sm-2 col-md-1 pl-md-0 pl-lg-2 pl-xl-3">
@@ -28,14 +29,16 @@
             </div>
             <div class="col-12">
                 <p>{{ comment.comment }}</p>
-                <span class="reply" onclick="setParentId({{ comment.id }})"><img
+                <span class="reply send-reply"
+                      onclick="setParentId({{ comment.id }})"><img
                         src="{% static 'images/comment-reply.png' %}"
                         alt=""> ارسال پاسخ</span>
             </div>
         </div>
     </div>
     {% for reply in comment.children.all %}
-        <div id="comment-box{{ reply.id }}" class="row justify-content-end">
+        <div id="comment-box{{ reply.id }}"
+             class="row justify-content-end">
             <div class="col-11 pt-2 pr-0">
                 <div class="comment p-3">
                     <div class="sender-details">
@@ -72,6 +75,6 @@
         </div>
     {% endfor %}
 {% empty %}
-    <h3>اولین نفری باشید که دیدگاه خود
-        را ارسال میکند.</h3>
+    <h5>اولین نفری باشید که نظر خود
+        را ارسال میکند.</h5>
 {% endfor %}

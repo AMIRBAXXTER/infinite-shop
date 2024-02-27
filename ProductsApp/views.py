@@ -20,6 +20,9 @@ def product_detail(request: HttpRequest, product_id):
     product_all_comments = ProductComment.objects.filter(product=product)
     product_color = ProductColor.objects.filter(product=product).first()
     product_properties = ProductProperty.objects.filter(product=product)
+    related_products = Product.objects.filter(category__in=product.category.all()).order_by('-created_at').exclude(
+        id=product.id)
+    print(related_products)
     context = {
         'product': product,
         'star_range': range(1, (avg + 1)),
@@ -29,6 +32,7 @@ def product_detail(request: HttpRequest, product_id):
         'product_all_comments': product_all_comments,
         'product_color': product_color,
         'product_properties': product_properties,
+        'related_products': related_products,
 
     }
     return render(request, 'products_app/product_detail.html', context)
@@ -76,3 +80,4 @@ def product_comment(request: HttpRequest):
         'product_comments': comments
     }
     return render(request, 'partials/comments_partial.html', context)
+

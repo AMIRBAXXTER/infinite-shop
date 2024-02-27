@@ -8,7 +8,7 @@ function colorStock(product_id) {
             })
             element.classList.add('border-danger')
             $.ajax({
-                url: 'http://127.0.0.1:8000/product-color-stock/',
+                url: '/product-color-stock/',
                 method: 'GET',
                 data: {
                     product_id: product_id,
@@ -40,7 +40,7 @@ function addComment(product_id) {
     let comments = document.querySelector('#comments')
     let comment = document.querySelector('#comment-text')
     $.ajax({
-        url: 'http://127.0.0.1:8000/add-comment/',
+        url: '/add-comment/',
         method: 'GET',
         data: {
             product_id: product_id,
@@ -48,7 +48,6 @@ function addComment(product_id) {
             parent: parentId.value,
         },
         success: function (res) {
-            console.log('comment-box' + parentId.value)
             $('#comments-cont').html(res)
             comment.value = ''
             if (parentId.value === '') {
