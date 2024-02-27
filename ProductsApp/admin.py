@@ -47,13 +47,18 @@ class BrandAdmin(admin.ModelAdmin):
     list_display = ('title', 'brand_image')
 
 
-
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('title', 'parent')
+
 
 @admin.register(ProductImage)
 class ProductImageAdmin(admin.ModelAdmin):
     list_display = ('title', 'product', 'image_preview')
     list_filter = ('product',)
+
+
+@admin.register(ProductVisited)
+class ProductVisitedAdmin(admin.ModelAdmin):
+    list_display = ('product', 'user', 'ip')
 

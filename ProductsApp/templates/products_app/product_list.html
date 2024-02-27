@@ -216,10 +216,11 @@
                                         <div class="row">
                                             <div class="col-12 col-sm-10 my-1">
                                                 <span class="d-block d-sm-inline-block">مرتب سازی بر اساس:</span>
-                                                <span onclick="orderProducts('order', '-created-at')" class="order-filter d-block d-sm-inline-block active">جدیدترین</span>
-                                                <span onclick="orderProducts()" class="order-filter d-block d-sm-inline-block">پربازدیدترین</span>
-                                                <span onclick="orderProducts()" class="order-filter d-block d-sm-inline-block">پرفروش‌ترین</span>
-                                                <span onclick="orderProducts()" class="order-filter d-block d-sm-inline-block">ارزان‌ترین</span>
+                                                <a href="{% url 'ProductsApp:order_by' 'newer' %}" class="order-filter d-block d-sm-inline-block ">جدیدترین</a>
+                                                <a href="{% url 'ProductsApp:order_by' 'most-view'  %}" class="order-filter d-block d-sm-inline-block">پربازدیدترین</a>
+{#                                                <a href="{% url 'ProductsApp:product_list'  %}" class="order-filter d-block d-sm-inline-block">پرفروش‌ترین</a>#}
+                                                <a href="{% url 'ProductsApp:order_by' 'low-price'  %}" class="order-filter d-block d-sm-inline-block">ارزان‌ترین</a>
+                                                <a href="{% url 'ProductsApp:order_by' 'high-price'  %}" class="order-filter d-block d-sm-inline-block">گران‌ترین</a>
                                             </div>
                                             <div class="col-12 col-sm-2 pt-1 text-end">
                                                 <span>{{ products.count }} کالا</span>

@@ -59,3 +59,12 @@ function addComment(product_id) {
     })
 
 }
+function orderFilterStyle () {
+    let currentUrl = window.location.href
+    for (let link of document.querySelectorAll('.order-filter')){
+        if (link.href === currentUrl){
+            link.classList.add('active')
+        }
+    }
+}
+window.onload = orderFilterStyle

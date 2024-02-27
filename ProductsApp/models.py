@@ -15,7 +15,6 @@ class Category(models.Model):
     parent = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='children', blank=True, null=True,
                                verbose_name='والد')
 
-
     def __str__(self):
         return self.title
 
@@ -182,3 +181,11 @@ class ProductColor(models.Model):
     class Meta:
         verbose_name = 'رنگ محصول'
         verbose_name_plural = 'رنگ های محصول'
+
+
+class ProductVisited(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_visited', verbose_name='محصول')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='product_visited', null=True, blank=True,
+                             verbose_name='کاربر')
+    ip = models.CharField(max_length=100, verbose_name='آی پی')
+

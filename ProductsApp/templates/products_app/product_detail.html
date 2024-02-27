@@ -149,7 +149,7 @@
                                             <div class="variable">
                                                 <div class="sub-title pt-2 pb-3">رنگ</div>
                                                 {% for color in product.product_color.all %}
-                                                    <span class="color-variable rounded-circle"
+                                                    <span class="color-variable rounded-circle border-2{% if forloop.counter == 1 %} border-danger {% endif %}"
                                                           data-color="{{ color.color }}"><a
                                                             class="rounded-circle"
                                                             onclick="colorStock({{ product.id }})" href="#"
