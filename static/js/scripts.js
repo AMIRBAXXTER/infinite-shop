@@ -1,25 +1,4 @@
 $(function() {
-    /* encode4365gbf265g43d Range Slider */
-    if($('#steps-slider').length) {
-        var slider = document.getElementById('steps-slider');
-
-        noUiSlider.create(slider, {
-            direction: 'rtl',
-            start: [0, 10000],
-            connect: true,
-            step: 1,
-            range: {
-                'min': 0,
-                'max': 10000
-            }
-        });
-
-        slider.noUiSlider.on('update', function (values) {
-            $('#encode4365gbf265g43d-range-from').text(numFormat(Math.round(values[0])));
-            $('#encode4365gbf265g43d-range-to').text(numFormat(Math.round(values[1])));
-        });
-    }
-    /* encode4365gbf265g43d Range Slider */
 
     /* On Sale Counter */
     function countDown(){

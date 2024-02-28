@@ -52,28 +52,41 @@ class ProductListView(ListView):
     model = Product
     template_name = 'products_app/product_list.html'
     context_object_name = 'products'
-    ordering = 'price'
+    ordering = 'title'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         site_info = SiteInfo.objects.filter(is_active=True).first()
         main_category = Category.objects.filter(parent=None).all()
+        most_expensive = Product.objects.order_by('-final_price').first()
         context['site_info'] = site_info
         context['main_category'] = main_category
+        context['most_expensive'] = most_expensive
         return context
 
     def get_queryset(self):
         query = super(ProductListView, self).get_queryset()
-        order_by = self.kwargs.get('order_by')
-        if order_by == 'newer':
-            query = query.order_by('-created_at')
-        elif order_by == 'high-price':
-            query = query.order_by('-final_price')
-        elif order_by == 'low-price':
-            query = query.order_by('final_price')
-        elif order_by == 'most-view':
-            query = query.annotate(num_visits=Count('product_visited'))
-            query = query.order_by('-num_visits')
+        order_by = self.request.GET.get('order-by')
+        low_price = self.request.GET.get('low-price')
+        high_price = self.request.GET.get('high-price')
+        category = self.kwargs.get('category')
+        if category:
+            query = query.filter(category__url_title__iexact=category)
+        if order_by:
+            if order_by == 'newer':
+                query = query.order_by('-created_at')
+            elif order_by == 'high-price':
+                query = query.order_by('-final_price')
+            elif order_by == 'low-price':
+                query = query.order_by('final_price')
+            elif order_by == 'most-view':
+                query = query.annotate(num_visits=Count('product_visited'))
+                query = query.order_by('-num_visits')
+            elif order_by == 'most-sale':
+                query = query.order_by('-sale_count')
+
+        if low_price or high_price:
+            query = query.filter(final_price__gte=low_price, final_price__lte=high_price)
 
         return query
 

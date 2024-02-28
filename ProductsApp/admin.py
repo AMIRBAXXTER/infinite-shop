@@ -49,7 +49,7 @@ class BrandAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'parent')
+    list_display = ('title', 'url_title', 'parent')
 
 
 @admin.register(ProductImage)
@@ -61,4 +61,3 @@ class ProductImageAdmin(admin.ModelAdmin):
 @admin.register(ProductVisited)
 class ProductVisitedAdmin(admin.ModelAdmin):
     list_display = ('product', 'user', 'ip')
-

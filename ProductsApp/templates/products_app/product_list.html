@@ -39,7 +39,7 @@
                                 <!-- Side Panel -->
                                 <div class="accordion filters-container">
                                     <div class="accordion-item">
-                                        <h2 class="accordion-header" id="headingOne">
+                                        <h2>
                                             <button class="accordion-button py-2 px-3" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapseOne"
                                                     aria-expanded="true" aria-controls="collapseOne">
@@ -48,18 +48,39 @@
                                         </h2>
                                         <div id="collapseOne" class="accordion-collapse collapse show"
                                              aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                            <div class="accordion-body">
-                                                {% for category in main_category %}
-                                                    <div class="form-group">
-                                                        <input type="checkbox" id="category{{ category.id }}">
-                                                        <label for="category1">{{ category.title }}</label>
+                                            {% for category in main_category %}
+                                                <div class="accordion filters-container">
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header" id="headingOne">
+                                                            <div class="d-flex justify-content-between">
+                                                                <a class="fs-6 align-self-center ms-3"
+                                                                   href="{% url 'ProductsApp:products_by_category' category.url_title %}">{{ category.title }}</a>
+                                                                <button class="btn btn-outline-danger   accordion-button w-25 text-warning"
+                                                                        type="button"
+                                                                        data-bs-toggle="collapse"
+                                                                        data-bs-target="#category{{ forloop.counter }}"
+                                                                        aria-expanded="true"
+                                                                        aria-controls="category{{ forloop.counter }}">
+                                                                </button>
+                                                            </div>
+
+                                                        </h2>
+                                                        <div id="category{{ forloop.counter }}"
+                                                             class="accordion-collapse collapse"
+                                                             aria-labelledby="headingOne"
+                                                             data-bs-parent="#accordionExample">
+                                                            {% for child in category.children.all %}
+                                                                <a class="d-block text-decoration-none w-75 ms-3 "
+                                                                   href="{% url 'ProductsApp:products_by_category' child.url_title %}">{{ child.title }}</a>
+                                                                <hr>
+                                                            {% endfor %}
+
+                                                        </div>
                                                     </div>
-                                                {% empty %}
-                                                    <span>دسته بندی ای موجود نیست.</span>
-                                                {% endfor %}
 
+                                                </div>
+                                            {% endfor %}
 
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -82,16 +103,29 @@
                                                     </div>
                                                     <div class="col-6 text-center encode4365gbf265g43d-range mt-3">
                                                         <div>از</div>
-                                                        <div id="encode4365gbf265g43d-range-from">10000</div>
+                                                        <div class="low-price-value"
+                                                             id="encode4365gbf265g43d-range-from">0
+                                                        </div>
                                                         <div>تومان</div>
                                                     </div>
                                                     <div class="col-6 text-center encode4365gbf265g43d-range mt-3">
                                                         <div>از</div>
-                                                        <div id="encode4365gbf265g43d-range-to">5000000</div>
+                                                        <div class="high-price-value"
+                                                             id="encode4365gbf265g43d-range-to">0
+                                                        </div>
                                                         <div>تومان</div>
                                                     </div>
                                                     <div class="col-12 text-center py-2">
-                                                        <div class="btn btn-warning">اعمال محدوده تخفیف</div>
+                                                        <form id="price-filter" method="get" action="">
+                                                            <input type="hidden" id="low-price" name="low-price"
+                                                                   value="0">
+                                                            <input type="hidden" id="high-price" name="high-price"
+                                                                   value="{{ most_expensive.final_price }}">
+                                                            <button onclick="priceFilter()" class="btn btn-warning">
+                                                                اعمال محدوده قیمت
+                                                            </button>
+                                                        </form>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -114,99 +148,6 @@
                                 </div>
 
 
-                                <div class="accordion filters-container mt-3">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="headingFive">
-                                            <button class="accordion-button py-2 px-3" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#collapseFive"
-                                                    aria-expanded="true" aria-controls="collapseFive">
-                                                جدیدترین محصولات
-                                            </button>
-                                        </h2>
-                                        <div id="collapseFive" class="accordion-collapse collapse show"
-                                             aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                            <div class="accordion-body">
-                                                <div class="row">
-                                                    <!-- Side Product -->
-                                                    <div class="col-12 col-md-4 col-lg-12 px-0 mt-2">
-                                                        <a href="product.html">
-                                                            <div class="side-product">
-                                                                <div class="row pl-3">
-                                                                    <div class="col-3 pl-2">
-                                                                        <div class="image"
-                                                                             style="background-image: url('assets/images/products/p100.png')"></div>
-                                                                    </div>
-                                                                    <div class="col-9 pr-0">
-                                                                        <h2>گوشی موبایل سامسونگ مدل Galaxy A51</h2>
-                                                                        <div class="row">
-                                                                            <div class="col-7 pl-0">
-                                                                                <span class="encode4365gbf265g43d">320.000 تومان</span>
-                                                                            </div>
-                                                                            <div class="col-5 pr-0 text-end">
-                                                                                <span class="views">321 بازدید</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                    <!-- Side Product -->
-                                                    <!-- Side Product -->
-                                                    <div class="col-12 col-md-4 col-lg-12 px-0 mt-2">
-                                                        <a href="product.html">
-                                                            <div class="side-product">
-                                                                <div class="row pl-3">
-                                                                    <div class="col-3 pl-2">
-                                                                        <div class="image"
-                                                                             style="background-image: url('assets/images/products/p100.png')"></div>
-                                                                    </div>
-                                                                    <div class="col-9 pr-0">
-                                                                        <h2>گوشی موبایل سامسونگ مدل Galaxy A51</h2>
-                                                                        <div class="row">
-                                                                            <div class="col-7 pl-0">
-                                                                                <span class="encode4365gbf265g43d">320.000 تومان</span>
-                                                                            </div>
-                                                                            <div class="col-5 pr-0 text-end">
-                                                                                <span class="views">321 بازدید</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                    <!-- Side Product -->
-                                                    <!-- Side Product -->
-                                                    <div class="col-12 col-md-4 col-lg-12 px-0 mt-2">
-                                                        <a href="product.html">
-                                                            <div class="side-product">
-                                                                <div class="row pl-3">
-                                                                    <div class="col-3 pl-2">
-                                                                        <div class="image"
-                                                                             style="background-image: url('assets/images/products/p100.png')"></div>
-                                                                    </div>
-                                                                    <div class="col-9 pr-0">
-                                                                        <h2>گوشی موبایل سامسونگ مدل Galaxy A51</h2>
-                                                                        <div class="row">
-                                                                            <div class="col-7 pl-0">
-                                                                                <span class="encode4365gbf265g43d">320.000 تومان</span>
-                                                                            </div>
-                                                                            <div class="col-5 pr-0 text-end">
-                                                                                <span class="views">321 بازدید</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                    <!-- Side Product -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <!-- /Side Panel -->
                             </div>
                             <div class="col-12 col-lg-9 px-0 pl-lg-0 pr-lg-2 mt-2 mt-lg-0">
@@ -216,11 +157,20 @@
                                         <div class="row">
                                             <div class="col-12 col-sm-10 my-1">
                                                 <span class="d-block d-sm-inline-block">مرتب سازی بر اساس:</span>
-                                                <a href="{% url 'ProductsApp:order_by' 'newer' %}" class="order-filter d-block d-sm-inline-block ">جدیدترین</a>
-                                                <a href="{% url 'ProductsApp:order_by' 'most-view'  %}" class="order-filter d-block d-sm-inline-block">پربازدیدترین</a>
-{#                                                <a href="{% url 'ProductsApp:product_list'  %}" class="order-filter d-block d-sm-inline-block">پرفروش‌ترین</a>#}
-                                                <a href="{% url 'ProductsApp:order_by' 'low-price'  %}" class="order-filter d-block d-sm-inline-block">ارزان‌ترین</a>
-                                                <a href="{% url 'ProductsApp:order_by' 'high-price'  %}" class="order-filter d-block d-sm-inline-block">گران‌ترین</a>
+                                                <a data-filter="newer" onclick="orderBy('newer')"
+                                                   class="order-filter d-block d-sm-inline-block ">جدیدترین</a>
+                                                <a data-filter="most-view" onclick="orderBy('most-view')"
+                                                   class="order-filter d-block d-sm-inline-block">پربازدیدترین</a>
+                                                <a data-filter="most-sale" onclick="orderBy('most-sale')"
+                                                   class="order-filter d-block d-sm-inline-block">پرفروش‌ترین</a>
+                                                <a data-filter="low-price" onclick="orderBy('low-price')"
+                                                   class="order-filter d-block d-sm-inline-block">ارزان‌ترین</a>
+                                                <a data-filter="high-price" onclick="orderBy('high-price')"
+                                                   class="order-filter d-block d-sm-inline-block">گران‌ترین</a>
+                                                <form id="order-form" method="get" action="">
+                                                    <input id="order-type" name="order-by" value="" type="hidden">
+                                                </form>
+
                                             </div>
                                             <div class="col-12 col-sm-2 pt-1 text-end">
                                                 <span>{{ products.count }} کالا</span>
@@ -234,7 +184,7 @@
                                         <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 gx-md-4">
                                             <!-- Products -->
                                             {% for product in products %}
-                                                <div class="col">
+                                                <div class="col {% if not product.is_active %}unavailable-product{% endif %}">
                                                     <!-- Product Box -->
                                                     <div class="encode4326654321vfb">
                                                         <a href="{% url 'ProductsApp:product_detail' product.id %}">
@@ -248,15 +198,19 @@
                                                                 {% endfor %}
 
 
-
-
                                                             </div>
                                                             <a href="{% url 'ProductsApp:product_detail' product.id %}">
                                                                 <h2>{{ product.title }}</h2></a>
-                                                            <span class="pre-encode4365gbf265g43d text-decoration-line-through">{{ product.price|intcomma:False }}</span>
-                                                            <span class="bg-danger m-auto d-inline-block px-1 rounded-2 text-light">{{ product.off_percent }}%</span>
-                                                            <div class="fs-4 encode4365gbf265g43d">{{ product.final_price|intcomma:False }}<span
-                                                                    class="fs-6">  تومان</span></div>
+                                                            {% if not product.is_active %}
+                                                                <span>ناموجود</span>
+
+                                                            {% else %}
+                                                                <span class="pre-encode4365gbf265g43d text-decoration-line-through">{{ product.price|intcomma:False }}</span>
+                                                                <span class="bg-danger m-auto d-inline-block px-1 rounded-2 text-light">{{ product.off_percent }}%</span>
+                                                                <div class="fs-4 encode4365gbf265g43d">{{ product.final_price|intcomma:False }}<span
+                                                                        class="fs-6">  تومان</span></div>
+                                                            {% endif %}
+
                                                             <div class="rate">
                                                                 <span class="encode43bf265g43d">({{ product.comment.count }} نظر)</span>
                                                             </div>
@@ -266,7 +220,8 @@
                                                 </div>
 
                                             {% empty %}
-
+                                                <p class="alert alert-warning w-100">محصولی برای نمایش وجود
+                                                    ندارد.</p>
                                             {% endfor %}
 
                                             <!-- /Products -->
@@ -292,5 +247,9 @@
 {% endblock %}k %}
 {% block scripts %}{% endblock %}
 {% block script %}
-
+    <script>
+        window.onload = function () {
+        }
+        sliderRange({{ most_expensive.final_price }})
+    </script>
 {% endblock %}

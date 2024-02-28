@@ -59,12 +59,60 @@ function addComment(product_id) {
     })
 
 }
-function orderFilterStyle () {
+
+function orderFilterStyle() {
     let currentUrl = window.location.href
-    for (let link of document.querySelectorAll('.order-filter')){
-        if (link.href === currentUrl){
+    for (let link of document.querySelectorAll('.order-filter')) {
+        if (currentUrl.includes('?order-by=' + link.getAttribute('data-filter'))) {
             link.classList.add('active')
         }
     }
 }
+
 window.onload = orderFilterStyle
+
+function orderBy(type) {
+    event.preventDefault()
+    const form = document.querySelector('#order-form')
+    const input = document.querySelector('#order-type')
+    console.log(type)
+    input.value = type
+    console.log(input.value)
+    form.submit()
+}
+
+function sliderRange(max) {
+
+    if ($('#steps-slider').length) {
+        var slider = document.getElementById('steps-slider');
+
+        noUiSlider.create(slider, {
+            direction: 'rtl',
+            start: [0, max],
+            connect: true,
+            step: 100000,
+            range: {
+                'min': 0,
+                'max': max
+            }
+        });
+
+        slider.noUiSlider.on('update', function (values) {
+            $('#encode4365gbf265g43d-range-from').text(Math.round(values[0]));
+            $('#encode4365gbf265g43d-range-to').text(Math.round(values[1]));
+        });
+    }
+}
+
+function priceFilter() {
+    event.preventDefault()
+    const lowPrice = document.querySelector('#low-price')
+    const highPrice = document.querySelector('#high-price')
+    const lowPriceVal = document.querySelector('.low-price-value')
+    const highPriceVal = document.querySelector('.high-price-value')
+    const form = document.querySelector('#price-filter')
+    lowPrice.value = lowPriceVal.innerHTML
+    highPrice.value = highPriceVal.innerHTML
+    form.submit()
+
+}

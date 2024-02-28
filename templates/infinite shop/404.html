@@ -15,7 +15,8 @@
                                 <p>صفحه مورد نظر شما حذف شده یا اصلا وجود نداشته است!</p>
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="index.html">صفحه نخست</a></li>
+                                        <li class="breadcrumb-item"><a href="{% url 'IndexApp:index' %}">صفحه نخست</a>
+                                        </li>
                                         <li class="breadcrumb-item active" aria-current="page">خطای 404</li>
                                     </ol>
                                 </nav>
@@ -45,15 +46,21 @@
                                         </div>
                                         <h2>صفحه مورد نظر یافت نشد!</h2>
                                         <p>احتمالا صفحه مورد نظر شما حذف یا تغییر نام داده شده است.</p>
-                                        <a href="index.html">بازگشت به صفحه اصلی</a>
+                                        <a href="{% url 'IndexApp:index' %}">بازگشت به صفحه اصلی</a>
                                         <div class="notfound-social">
-                                            <a href="#"><img src="assets/images/social/twitter.png" alt="توئیتر"
+                                            <a href="#"><img src="{% static 'images/social/twitter.png' %}" alt="توئیتر"
                                                              width="18px"></a>
-                                            <a href="#"><img src="assets/images/social/insta.png" alt="اینستاگرام"
+                                            <a href="#"><img src="{% static 'images/social/insta.png' %}"
+                                                             alt="اینستاگرام"
                                                              width="18px"></a>
-                                            <a href="#"><img src="assets/images/social/linkedin.png" alt="لینکدین"
+                                            <a href="#"><img src="{% static 'images/social/linkedin.png' %}"
+                                                             alt="لینکدین"
                                                              width="18px"></a>
-                                            <a href="#"><img src="assets/images/social/facebook.png" alt="فیس بوک"
+                                            <a href="#"><img src="{% static 'images/social/facebook.png' %}"
+                                                             alt="فیس بوک"
+                                                             width="18px"></a>
+                                            <a href="#"><img src="{% static 'images/social/youtube.png' %}"
+                                                             alt="یوتیوب"
                                                              width="18px"></a>
                                         </div>
                                     </div>

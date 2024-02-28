@@ -2,9 +2,13 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.text import slugify
 from django_resized import ResizedImageField
-
 from UserApp.models import User
+
+from translate import Translator
+
+tr = Translator('en', 'fa')
 
 
 # Create your models here.
@@ -12,6 +16,7 @@ from UserApp.models import User
 
 class Category(models.Model):
     title = models.CharField(max_length=50, verbose_name='عنوان')
+    url_title = models.SlugField(max_length=50, default='automatic-set', verbose_name='عنوان در url', blank=True)
     parent = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='children', blank=True, null=True,
                                verbose_name='والد')
 
@@ -21,6 +26,11 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'دسته بندی'
         verbose_name_plural = 'دسته بندی ها'
+
+    def save(self, *args, **kwargs):
+        if self.url_title == 'automatic-set' or self.url_title == '':
+            self.url_title = slugify(tr.translate(self.title))
+        super(Category, self).save(*args, **kwargs)
 
 
 class Brand(models.Model):
@@ -48,6 +58,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
     is_active = models.BooleanField(default=True, verbose_name='فعال/غیرفعال')
+    sale_count = models.PositiveIntegerField(default=0, verbose_name='تعداد فروش')
     average_rate = models.DecimalField(max_digits=3, decimal_places=1, verbose_name='میانگین امتیازات', default=1)
     rate = models.ManyToManyField(User, through='ProductRate', related_name='product_rates', verbose_name='امتیازات')
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name='products', verbose_name='برند', blank=True,
@@ -188,4 +199,3 @@ class ProductVisited(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='product_visited', null=True, blank=True,
                              verbose_name='کاربر')
     ip = models.CharField(max_length=100, verbose_name='آی پی')
-

@@ -1960,3 +1960,10 @@ img {
 .send-reply {
   cursor: pointer;
 }
+.unavailable-product {
+  opacity: 0.5;!important;
+}
+.unavailable-product-link {
+  opacity: 0.5;!important;
+  pointer-events: none;!important;
+}
