@@ -20,7 +20,8 @@
                                     <ol class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="{% url 'IndexApp:index' %}">صفحه نخست</a>
                                         </li>
-                                        <li class="breadcrumb-item active" aria-current="page">محصولات</li>
+                                        <li class="breadcrumb-item active" aria-current="page"><a
+                                                href="{% url 'ProductsApp:product_list' %}">محصولات</a></li>
                                     </ol>
                                 </nav>
                             </div>
@@ -37,13 +38,15 @@
                         <div class="row">
                             <div class="col-12 col-lg-3 px-3 px-lg-0">
                                 <!-- Side Panel -->
+
+                                <span class="m-3" ><a href="{% url 'ProductsApp:product_list' %}">لغو تمام فیلترها</a></span>
                                 <div class="accordion filters-container">
                                     <div class="accordion-item">
                                         <h2>
                                             <button class="accordion-button py-2 px-3" type="button"
                                                     data-bs-toggle="collapse" data-bs-target="#collapseOne"
                                                     aria-expanded="true" aria-controls="collapseOne">
-                                                گروه های محصولات
+                                                دسته بندی محصولات
                                             </button>
                                         </h2>
                                         <div id="collapseOne" class="accordion-collapse collapse show"
@@ -55,11 +58,11 @@
                                                             <div class="d-flex justify-content-between">
                                                                 <a class="fs-6 align-self-center ms-3"
                                                                    href="{% url 'ProductsApp:products_by_category' category.url_title %}">{{ category.title }}</a>
-                                                                <button class="btn btn-outline-danger   accordion-button w-25 text-warning"
+                                                                <button class="btn btn-outline-danger   accordion-button w-25 text-warning collapsed"
                                                                         type="button"
                                                                         data-bs-toggle="collapse"
                                                                         data-bs-target="#category{{ forloop.counter }}"
-                                                                        aria-expanded="true"
+                                                                        aria-expanded="false"
                                                                         aria-controls="category{{ forloop.counter }}">
                                                                 </button>
                                                             </div>
@@ -85,16 +88,60 @@
                                     </div>
                                 </div>
 
+                                <div class="accordion filters-container">
+                                    <div class="accordion-item">
+                                        <h2>
+                                            <button class="accordion-button py-2 px-3" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                                                    aria-expanded="true" aria-controls="collapseTwo">
+                                                برند محصولات
+                                            </button>
+                                        </h2>
+                                        <div id="collapseTwo" class="accordion-collapse collapse show"
+                                             aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                            {% for brand in brands %}
+                                                <div class="accordion filters-container">
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header" id="headingTwo">
+                                                            <div class="d-flex justify-content-between">
+                                                                <a class="fs-6 align-self-center m-3"
+                                                                   href="{% url 'ProductsApp:products_by_brand' brand.title %}">{{ brand.title }}</a>
+                                                            </div>
+
+                                                        </h2>
+                                                        <div id="category{{ forloop.counter }}"
+                                                             class="accordion-collapse collapse"
+                                                             aria-labelledby="headingOne"
+                                                             data-bs-parent="#accordionExample">
+                                                            {% for child in category.children.all %}
+                                                                <a class="d-block text-decoration-none w-75 ms-3 "
+                                                                   href="{% url 'ProductsApp:products_by_category' child.url_title %}">{{ child.title }}</a>
+                                                                <hr>
+                                                            {% endfor %}
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            {% endfor %}
+                                            <form id="brand-form" method="get" action="">
+                                                <input id="brand" name="brand" value="" type="hidden">
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="accordion filters-container mt-3">
                                     <div class="accordion-item">
                                         <h2 class="accordion-header" id="headingTwo">
                                             <button class="accordion-button py-2 px-3" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                                                    data-bs-toggle="collapse" data-bs-target="#collapseThree"
                                                     aria-expanded="true" aria-controls="collapseTwo">
                                                 محدوده قیمت
                                             </button>
                                         </h2>
-                                        <div id="collapseTwo" class="accordion-collapse collapse show"
+                                        <div id="collapseThree" class="accordion-collapse collapse show"
                                              aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
                                                 <div class="row">
@@ -133,21 +180,6 @@
                                     </div>
                                 </div>
 
-                                <div class="accordion filters-container mt-3">
-                                    <div class="accordion-item">
-                                        <div id="collapseThree" class="accordion-collapse show"
-                                             aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                            <div class="accordion-body pb-2">
-                                                <div class="form-group">
-                                                    <input type="checkbox" id="only-available">
-                                                    <label for="only-available">فقط کالاهای موجود</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
                                 <!-- /Side Panel -->
                             </div>
                             <div class="col-12 col-lg-9 px-0 pl-lg-0 pr-lg-2 mt-2 mt-lg-0">
@@ -157,6 +189,8 @@
                                         <div class="row">
                                             <div class="col-12 col-sm-10 my-1">
                                                 <span class="d-block d-sm-inline-block">مرتب سازی بر اساس:</span>
+                                                <a data-filter="available" onclick="orderBy('available')"
+                                                   class="order-filter d-block d-sm-inline-block ">کالا های موجود</a>
                                                 <a data-filter="newer" onclick="orderBy('newer')"
                                                    class="order-filter d-block d-sm-inline-block ">جدیدترین</a>
                                                 <a data-filter="most-view" onclick="orderBy('most-view')"

@@ -24,7 +24,7 @@ def product_detail(request: HttpRequest, product_id):
     product_color = ProductColor.objects.filter(product=product).first()
     product_properties = ProductProperty.objects.filter(product=product)
     related_products = Product.objects.filter(category__in=product.category.all()).order_by('-created_at').exclude(
-        id=product.id)
+        id=product.id).distinct()
     print(request.META.get('REMOTE_ADDR'))
     print(request.META.get('HTTP_X_FORWARDED_FOR'))
 
@@ -58,9 +58,11 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
         site_info = SiteInfo.objects.filter(is_active=True).first()
         main_category = Category.objects.filter(parent=None).all()
+        brands = Brand.objects.all()
         most_expensive = Product.objects.order_by('-final_price').first()
         context['site_info'] = site_info
         context['main_category'] = main_category
+        context['brands'] = brands
         context['most_expensive'] = most_expensive
         return context
 
@@ -70,9 +72,15 @@ class ProductListView(ListView):
         low_price = self.request.GET.get('low-price')
         high_price = self.request.GET.get('high-price')
         category = self.kwargs.get('category')
+        brand = self.kwargs.get('brand')
+        if brand:
+            query = query.filter(brand__title__iexact=brand)
+
         if category:
             query = query.filter(category__url_title__iexact=category)
         if order_by:
+            if order_by == 'available':
+                query = query.filter(is_active=True)
             if order_by == 'newer':
                 query = query.order_by('-created_at')
             elif order_by == 'high-price':

@@ -61,3 +61,5 @@ class ProductImageAdmin(admin.ModelAdmin):
 @admin.register(ProductVisited)
 class ProductVisitedAdmin(admin.ModelAdmin):
     list_display = ('product', 'user', 'ip')
+
+

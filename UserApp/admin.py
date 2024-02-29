@@ -1,20 +1,38 @@
 from django.contrib import admin
+from .models import *
+from django.contrib.auth.admin import UserAdmin
+from .forms import CustomUserCreationForm, CustomUserChangeForm
 
-from UserApp.models import *
 
+# Register your models here.
 
 class AddressInline(admin.TabularInline):
     model = Address
     extra = 0
 
 
-# Register your models here.
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email')
-    fields = ('username', 'first_name', 'last_name', 'email', 'password', 'profile_image')
+class ShopUserAdmin(UserAdmin):
+    ordering = ['phone']
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = User
+    list_display = ['phone', 'first_name', 'last_name', 'is_staff', 'is_active']
+    fieldsets = (
+        (None, {'fields': ('phone', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name',)}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined',)}),
+    )
+
+    add_fieldsets = (
+        (None, {'fields': ('phone', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name',)}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined',)}),
+    )
     inlines = [
-        AddressInline
+        AddressInline,
     ]
 
 

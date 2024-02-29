@@ -82,13 +82,18 @@ function orderBy(type) {
 }
 
 function sliderRange(max) {
+        const currentUrl = window.location.href;
+        let url = new URL(currentUrl)
+        let params = url.searchParams
+        let lowPrice = params.get('low-price')
+        let highPrice = params.get('high-price')
 
     if ($('#steps-slider').length) {
-        var slider = document.getElementById('steps-slider');
+        let slider = document.getElementById('steps-slider');
 
         noUiSlider.create(slider, {
             direction: 'rtl',
-            start: [0, max],
+            start: [lowPrice || 0, highPrice || max],
             connect: true,
             step: 100000,
             range: {
