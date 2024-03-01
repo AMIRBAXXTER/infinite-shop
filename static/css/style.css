@@ -1967,3 +1967,20 @@ img {
   opacity: 0.5;!important;
   pointer-events: none;!important;
 }
+ul.errorlist {
+  list-style-type: none;
+}
+.login-button {
+  display: inline-block;
+  width: 4rem;
+  height: 2rem;
+  border: 2px solid #fcb941;
+  text-align: center;
+  line-height: 24px!important;
+  border-radius: 1rem 0;
+  transition: all 0.5s ease-in;
+}
+.login-button:hover {
+  color: red;!important;
+  background: rgba(213, 128, 0, 0.43);
+}
