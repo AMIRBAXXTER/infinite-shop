@@ -32,6 +32,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=25, verbose_name='نام')
     last_name = models.CharField(max_length=25, verbose_name='نام خانوادگی')
     national_code = models.CharField(max_length=10, null=True, blank=True, verbose_name='کد ملی')
+    date_of_birth = models.DateField(null=True, blank=True, verbose_name='تاریخ تولد')
+    email = models.EmailField(null=True, blank=True, verbose_name='ایمیل')
+    card_number = models.CharField(max_length=16, null=True, blank=True, verbose_name='شماره کارت')
+    profile_image = models.ImageField(null=True, blank=True, verbose_name='تصویر پروفایل')
     is_active = models.BooleanField(default=True, verbose_name='فعال/غیرفعال')
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now, verbose_name='تاریخ ایجاد')
@@ -41,8 +45,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = []
 
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}' if self.first_name != '' and self.last_name != '' else self.phone
+
     def __str__(self):
-        return self.phone
+        return self.full_name()
 
 
 class Province(models.Model):

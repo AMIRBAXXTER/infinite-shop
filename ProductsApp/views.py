@@ -14,9 +14,11 @@ def product_detail(request: HttpRequest, product_id):
                                                                                 'rate',
                                                                                 'comment').filter(
         id=product_id).first()
+    user = request.user
     if product is None:
         raise Http404
     avg = int(product.average_rate)
+    user_favorited = product.favorites.filter(user=user).exists()
     blank_star = 5 - avg
     main_category = product.category.filter(parent=None).first()
     product_comments = ProductComment.objects.filter(product=product, parent=None).order_by('-created_at')
@@ -43,6 +45,7 @@ def product_detail(request: HttpRequest, product_id):
         'product_color': product_color,
         'product_properties': product_properties,
         'related_products': related_products,
+        'user_favorited': user_favorited,
 
     }
     return render(request, 'products_app/product_detail.html', context)
@@ -128,3 +131,17 @@ def product_comment(request: HttpRequest):
         'product_comments': comments
     }
     return render(request, 'partials/comments_partial.html', context)
+
+@login_required
+def add_product_to_favorite(request):
+    product_id = request.GET.get('product_id')
+    product: Product = Product.objects.filter(id=product_id).first()
+    user = request.user
+    if not product.favorites.filter(user=user).exists():
+        product.favorites.create(user=user)
+        return JsonResponse({'liked': True})
+
+    else:
+        product.favorites.filter(user=user).delete()
+        return JsonResponse({'liked': False})
+

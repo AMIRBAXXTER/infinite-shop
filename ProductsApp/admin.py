@@ -62,4 +62,6 @@ class ProductImageAdmin(admin.ModelAdmin):
 class ProductVisitedAdmin(admin.ModelAdmin):
     list_display = ('product', 'user', 'ip')
 
-
+@admin.register(ProductFavorite)
+class ProductFavoriteAdmin(admin.ModelAdmin):
+    list_display = ('product', 'user')

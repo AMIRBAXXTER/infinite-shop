@@ -193,9 +193,9 @@
                                             </button>
 
                                             <br class="d-sm-none">
-                                            <div class="btn bi bi-heart mt-1 mt-sm-0"
+                                            <a id="like" onclick="addProductToFavorite({{ product.id }})" class="btn bi bi-heart{% if user_favorited %}-fill{% endif %}  mt-1 mt-sm-0" style="color: red"
                                                  data-toggle="tooltip" data-placement="top"
-                                                 title="افزودن به علاقه‌مندی"></div>
+                                                 title="افزودن به علاقه‌مندی"></a>
                                             <a href="#">
                                                 <div class="btn bi bi-book-half mt-1 mt-sm-0"
                                                      data-toggle="tooltip" data-placement="top" title="مقایسه"></div>

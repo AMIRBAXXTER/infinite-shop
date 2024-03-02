@@ -136,7 +136,7 @@ class ProductRate(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
 
     def __str__(self):
-        return f'{self.user.username}:{self.product.title}:{self.rate}'
+        return f'{self.user.full_name}:{self.product.title}:{self.rate}'
 
     def save(self, *args, **kwargs):
         if self.user in self.product.rate.all():
@@ -158,7 +158,7 @@ class ProductComment(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
 
     def __str__(self):
-        return f'{self.user.username}:{self.id}'
+        return f'{self.user.full_name}:{self.id}'
 
     class Meta:
         verbose_name = 'نظر محصول'
@@ -172,7 +172,7 @@ class ProductFavorite(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
 
     def __str__(self):
-        return f'{self.user.username}:{self.product.title}'
+        return f'{self.user.full_name}:{self.product.title}'
 
     class Meta:
         verbose_name = 'محصول مورد علاقه'

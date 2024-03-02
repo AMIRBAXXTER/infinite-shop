@@ -20,14 +20,16 @@ class ShopUserAdmin(UserAdmin):
     list_display = ['phone', 'first_name', 'last_name', 'is_staff', 'is_active']
     fieldsets = (
         (None, {'fields': ('phone', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name',)}),
+        ('Personal info', {'fields': (
+            'first_name', 'last_name', 'national_code', 'date_of_birth', 'email', 'card_number', 'profile_image')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined',)}),
     )
 
     add_fieldsets = (
         (None, {'fields': ('phone', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name',)}),
+        ('Personal info', {'fields': (
+        'first_name', 'last_name', 'national_code', 'date_of_birth', 'email', 'card_number', 'profile_image')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined',)}),
     )

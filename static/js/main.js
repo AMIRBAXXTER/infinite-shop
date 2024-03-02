@@ -121,3 +121,24 @@ function priceFilter() {
     form.submit()
 
 }
+function addProductToFavorite(id) {
+    let likeButton = $('#like')
+    event.preventDefault()
+    $.ajax({
+        url: '/add-favorite/',
+        method: 'GET',
+        data: {
+            product_id: id,
+        },
+        success: function (data) {
+            if (data.liked) {
+                likeButton.removeClass('bi-heart')
+                likeButton.addClass('bi-heart-fill')
+            }else {
+                likeButton.removeClass('bi-heart-fill')
+                likeButton.addClass('bi-heart')
+            }
+        },
+    })
+
+}

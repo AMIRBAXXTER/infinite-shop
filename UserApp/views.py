@@ -1,4 +1,5 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .forms import *
 from .models import User
@@ -17,7 +18,7 @@ def user_login(request):
             if user:
                 if user.is_active:
                     login(request, user)
-                    return redirect('IndexApp:index')
+                    return redirect('UserApp:profile')
 
     else:
         form = UserLoginForm()
@@ -29,10 +30,59 @@ def user_register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            User.objects.create_user(phone=cd['phone'], password=cd['password'], first_name=cd['first_name'], last_name=cd['last_name'])
+            User.objects.create_user(phone=cd['phone'], password=cd['password'], first_name=cd['first_name'],
+                                     last_name=cd['last_name'])
             user = authenticate(phone=cd['phone'], password=cd['password'])
             login(request, user)
             return redirect('IndexApp:index')
     else:
         form = UserRegisterForm()
     return render(request, 'registration/register.html', {'form': form})
+
+
+@login_required
+def user_profile(request):
+    user = request.user
+    context = {
+        'user': user
+    }
+    if request.method == 'POST':
+        form_name = request.POST.get('form_name')
+        if form_name == 'profile_form':
+            profile_form = UserProfileForm(request.POST, instance=user)
+            if profile_form.is_valid():
+                profile_form.save()
+                return redirect('UserApp:profile')
+            else:
+                context.update({
+                    'profile_form': profile_form,
+                    'password_form': PasswordChangeForm(),
+                })
+        if form_name == 'password_form':
+            password_form = PasswordChangeForm(request.POST)
+            if password_form.is_valid():
+                cd = password_form.cleaned_data
+                old_password = cd['old_password']
+                new_password = cd['new_password2']
+                if user.check_password(old_password):
+                    user.set_password(new_password)
+                    user.save()
+                    login(request, user)
+            else:
+                context.update({
+                    'profile_form': UserProfileForm(instance=user),
+                    'password_form': password_form,
+                })
+                return redirect('UserApp:profile')
+    else:
+        context.update({
+            'profile_form': UserProfileForm(instance=user),
+            'password_form': PasswordChangeForm(),
+        })
+    return render(request, 'profile/profile.html', context)
+
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return redirect('UserApp:login')
