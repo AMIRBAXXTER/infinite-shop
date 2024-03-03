@@ -1,10 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'profile/parent/profile-parent.html' %}
+{% load static %}
+{% load humanize %}
+{% load product_tags %}
+{% block title %}
+    پروفایل
+{% endblock %}
+{% block header %}
 
-</body>
-</html>
+{% endblock %}
+{% block profile_content %}
+    <!-- Favorite Products -->
+    <div class="custom-container" id="favorites">
+        <div class="row pt-2 px-3">
+            <div class="col-12"><h1>محصولات مورد علاقه</h1></div>
+        </div>
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 gx-md-4">
+                <!-- Products -->
+                {% for product in fav_products %}
+                    <div class="col {% if not product.is_active %}unavailable-product{% endif %}">
+                        <!-- Product Box -->
+                        <div class="encode4326654321vfb">
+                            <a href="{% url 'ProductsApp:product_detail' product.id %}">
+                                <div class="image table-hover"
+                                     style="background-image: url('{{ product|product_main_image }}')"></div>
+                            </a>
+                            <div class="details p-3">
+                                <div class="category">
+                                    {% for category in product.category.all %}
+                                        <span>{{ category.title }}</span>
+                                    {% endfor %}
+
+
+                                </div>
+                                <a href="{% url 'ProductsApp:product_detail' product.id %}">
+                                    <h2>{{ product.title }}</h2></a>
+                                {% if not product.is_active %}
+                                    <span>ناموجود</span>
+
+                                {% else %}
+                                    <span class="pre-encode4365gbf265g43d text-decoration-line-through">{{ product.price|intcomma:False }}</span>
+                                    <span class="bg-danger m-auto d-inline-block px-1 rounded-2 text-light">{{ product.off_percent }}%</span>
+                                    <div class="fs-4 encode4365gbf265g43d">{{ product.final_price|intcomma:False }}<span
+                                            class="fs-6">  تومان</span></div>
+                                {% endif %}
+
+                                <div class="rate">
+                                    <span class="encode43bf265g43d">({{ product.comment.count }} نظر)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Product Box -->
+                    </div>
+                {% empty %}
+                    <p class="alert alert-warning w-100">محصولی برای نمایش وجود
+                        ندارد.</p>
+                {% endfor %}
+
+
+            </div>
+        </div>
+    </div>
+    <!-- /Favorite Products -->
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}
+{% block script %}
+    <script>
+        tabStyle()
+    </script>
+{% endblock %}

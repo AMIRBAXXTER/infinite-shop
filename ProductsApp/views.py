@@ -62,7 +62,7 @@ class ProductListView(ListView):
         site_info = SiteInfo.objects.filter(is_active=True).first()
         main_category = Category.objects.filter(parent=None).all()
         brands = Brand.objects.all()
-        most_expensive = Product.objects.order_by('-final_price').first()
+        most_expensive = Product.objects.filter(is_active=True).order_by('-final_price').first()
         context['site_info'] = site_info
         context['main_category'] = main_category
         context['brands'] = brands
@@ -70,7 +70,7 @@ class ProductListView(ListView):
         return context
 
     def get_queryset(self):
-        query = super(ProductListView, self).get_queryset()
+        query = super(ProductListView, self).get_queryset().order_by('-is_active')
         order_by = self.request.GET.get('order-by')
         low_price = self.request.GET.get('low-price')
         high_price = self.request.GET.get('high-price')
@@ -85,19 +85,19 @@ class ProductListView(ListView):
             if order_by == 'available':
                 query = query.filter(is_active=True)
             if order_by == 'newer':
-                query = query.order_by('-created_at')
+                query = query.order_by('-is_active', '-created_at')
             elif order_by == 'high-price':
-                query = query.order_by('-final_price')
+                query = query.order_by('-is_active', '-final_price')
             elif order_by == 'low-price':
-                query = query.order_by('final_price')
+                query = query.order_by('-is_active', 'final_price')
             elif order_by == 'most-view':
                 query = query.annotate(num_visits=Count('product_visited'))
-                query = query.order_by('-num_visits')
+                query = query.order_by('-is_active', '-num_visits')
             elif order_by == 'most-sale':
-                query = query.order_by('-sale_count')
+                query = query.order_by('-is_active', '-sale_count')
 
         if low_price or high_price:
-            query = query.filter(final_price__gte=low_price, final_price__lte=high_price)
+            query = query.filter(is_active=True, final_price__gte=low_price, final_price__lte=high_price)
 
         return query
 

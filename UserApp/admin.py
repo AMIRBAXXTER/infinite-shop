@@ -6,7 +6,7 @@ from .forms import CustomUserCreationForm, CustomUserChangeForm
 
 # Register your models here.
 
-class AddressInline(admin.TabularInline):
+class AddressInline(admin.StackedInline):
     model = Address
     extra = 0
 

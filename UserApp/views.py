@@ -1,6 +1,9 @@
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
+
+from ProductsApp.models import Product
 from .forms import *
 from .models import User
 
@@ -86,3 +89,101 @@ def user_profile(request):
 def user_logout(request):
     logout(request)
     return redirect('UserApp:login')
+
+
+@login_required
+def favorite_products(request):
+    fav_products = Product.objects.filter(favorites__user=request.user).order_by('-created_at')
+    context = {
+        'fav_products': fav_products
+    }
+    return render(request, 'profile/favorites.html', context)
+
+
+def addresses(request):
+    form = AddressForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'profile/addresses.html', context)
+
+
+def address_partial(request):
+    user_addresses = request.user.addresses.all()
+    context = {
+        'user_addresses': user_addresses
+    }
+    return render(request, 'partials/user-address-partial.html', context)
+
+
+def get_city(request):
+    province_id = request.GET.get('province_id')
+    province = Province.objects.get(id=province_id)
+    cities = list(City.objects.filter(province=province).all().values_list('name', 'id'))
+    response = {
+        'cities': cities
+    }
+    return JsonResponse(response)
+
+
+def add_address(request):
+    user = request.user
+    province_id = request.GET.get('province_id')
+    province = Province.objects.get(id=province_id)
+    city_id = request.GET.get('city_id')
+    city = City.objects.get(id=city_id)
+    address = request.GET.get('address')
+    postal_code = request.GET.get('postal_code')
+    receiver_name = request.GET.get('receiver_name')
+    submit_type = request.GET.get('submit_type')
+    if submit_type == 'add':
+        address = Address(user=user, province=province, city=city, address=address, postal_code=postal_code,
+                          receiver_name=receiver_name)
+        address.save()
+    elif submit_type == 'edit':
+        address_id = request.GET.get('address_id')
+        edited_address = Address.objects.get(id=address_id)
+        edited_address.province = province
+        edited_address.city = city
+        edited_address.address = address
+        edited_address.postal_code = postal_code
+        edited_address.receiver_name = receiver_name
+        edited_address.save()
+    user_addresses = user.addresses.all()
+    context = {
+        'user_addresses': user_addresses
+    }
+    return render(request, 'partials/user-address-partial.html', context)
+
+
+def delete_address(request):
+    address_id = request.GET.get('address_id')
+    address = Address.objects.get(id=address_id)
+    address.delete()
+    user_addresses = request.user.addresses.all()
+    context = {
+        'user_addresses': user_addresses
+    }
+    return render(request, 'partials/user-address-partial.html', context)
+
+
+def activate_address(request):
+    address_id = request.GET.get('address_id')
+    address = Address.objects.get(id=address_id)
+    address.is_active = True
+    address.save()
+    user_addresses = request.user.addresses.all()
+    context = {
+        'user_addresses': user_addresses
+    }
+    return render(request, 'partials/user-address-partial.html', context)
+
+
+def edit_address(request):
+    address_id = request.GET.get('address_id')
+    address = Address.objects.get(id=address_id)
+    edit_form = AddressForm(instance=address)
+    context = {
+        'edit_form': edit_form,
+    }
+    return render(request, 'partials/address-form.html', context)

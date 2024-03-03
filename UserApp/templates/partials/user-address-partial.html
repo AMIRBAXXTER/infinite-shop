@@ -1,0 +1,30 @@
+{% for address in user_addresses %}
+    <!-- Address Record -->
+    <div id="{{ address.id }}" class="col-12 address py-2">
+        <div class="row">
+            <div class="col-12 col-sm-10">
+                <div class="title">{{ address.address }}</div>
+                <div class="sub-title">{{ address.province }}, {{ address.city }}</div>
+                <div class="sub-title">کد پستی : {{ address.postal_code }}</div>
+                <div class="sub-title"> تحویل گیرنده : {{ address.receiver_name }}</div>
+            </div>
+            <div class="col-12 col-sm-2 text-lg-end">
+                <a onclick="deleteAddress({{ address.id }})" title="حذف"
+                   class="float-right float-sm-left pr-2 pl-sm-2"><i
+                        class="fa fa-trash-alt font-weight-normal"></i></a>
+                <a onclick="editAddress({{ address.id }})" class="float-right float-sm-left" title="ویرایش"><i
+                        class="fa fa-edit font-weight-normal"></i></a>
+                <a onclick="activateAddress({{ address.id }})" class="float-right float-sm-left ml-2" title="فعالسازی"><i
+                        class="fa fa{% if address.is_active %}-check{% endif %}-circle" style="color: #fcb941"></i></a>
+            </div>
+        </div>
+    </div>
+    <!-- Address Record -->
+{% empty %}
+    <div class="col-6">
+        <div class="alert alert-warning">
+            آدرسی ثبت نکرده اید.
+        </div>
+    </div>
+
+{% endfor %}

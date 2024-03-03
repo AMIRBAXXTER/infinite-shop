@@ -1,0 +1,72 @@
+{% extends 'profile/parent/profile-parent.html' %}
+{% load render_partial %}
+{% load static %}
+{% load thumbnail %}
+{% block title %}
+    پروفایل
+{% endblock %}
+{% block header %}
+
+{% endblock %}
+{% block profile_content %}
+    <!-- New Address Form -->
+    <div class="custom-container mb-2" id="new-address">
+        <div class="row pt-2 px-3">
+            <div class="col-12"><h1 class="address-title" >افزودن آدرس جدید</h1></div>
+        </div>
+        <hr>
+        <div class="container">
+            <div class="row">
+                <form action="" method="post">
+                    <div class="col-12 pt-3">
+                        <div class="row">
+
+                            {% for field in form %}
+                                <div class="col-12 col-md-{% if field.name == 'address' %}8{% else %}4{% endif %} pl-2">
+                                    <div class="form-group m-1">
+                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                        {{ field }}
+                                        {% if field.errors %}
+                                            <small class="form-text text-danger">{{ field.errors }}</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                            <div class="col-12">
+                                <div class="form-group m-1 pb-3">
+                                    <button id="submit-button" name="submit-type" value="add" type="submit"  onclick="addAddress()" class="login-button px-1">ثبت</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <!-- /New Address Form -->
+
+    <!-- User Addresses -->
+    <div class="custom-container" id="addresses">
+        <div class="row pt-2 px-3">
+            <div class="col-12"><h1>آدرس های من</h1></div>
+        </div>
+        <hr>
+        <div class="container">
+            <div class="row" id="address-cont">
+                {% render_partial 'UserApp.views.address_partial' %}
+            </div>
+        </div>
+    </div>
+    <!-- /User Addresses -->
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}
+{% block script %}
+    <script>
+        tabStyle()
+        selectBoxOptions()
+    </script>
+{% endblock %}

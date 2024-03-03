@@ -77,14 +77,33 @@ class City(models.Model):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(User, related_name='addresses', on_delete=models.CASCADE, null=True, blank=True,
+    user = models.ForeignKey(User, related_name='addresses', on_delete=models.CASCADE,
                              verbose_name='کاربر')
-    province = models.ForeignKey(Province, related_name='addresses', on_delete=models.CASCADE, null=True, blank=True, )
-    city = models.ForeignKey(City, related_name='addresses', on_delete=models.CASCADE, null=True, blank=True, )
-    address = models.CharField(max_length=200, null=True, blank=True, verbose_name='آدرس')
-    postal_code = models.CharField(max_length=10, null=True, blank=True, verbose_name='کد پستی')
-    receiver_name = models.CharField(max_length=200, null=True, blank=True, verbose_name='تحویل گیرنده')
-    is_active = models.BooleanField(verbose_name='فعال/غیرفعال')
+    province = models.ForeignKey(Province, related_name='addresses', on_delete=models.CASCADE, verbose_name='استان')
+    city = models.ForeignKey(City, related_name='addresses', on_delete=models.CASCADE, verbose_name='شهر')
+    address = models.CharField(max_length=200, verbose_name='آدرس')
+    postal_code = models.CharField(max_length=10, verbose_name='کد پستی')
+    receiver_name = models.CharField(max_length=200, verbose_name='تحویل گیرنده')
+    created_at = models.DateTimeField(default=timezone.now, verbose_name='تاریخ ایجاد')
+    updated_at = models.DateTimeField(default=timezone.now, verbose_name='تاریخ بروزرسانی')
+    is_active = models.BooleanField(default=False, verbose_name='فعال/غیرفعال')
 
     def __str__(self):
         return f'{self.user}:{self.id}'
+
+    def save(self, *args, **kwargs):
+        if self.is_active:
+            self.user.addresses.filter(is_active=True).update(is_active=False)
+        if not self.user.addresses.all().exists():
+            self.is_active = True
+
+        super(Address, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.is_active:
+            temp = self.user.addresses.filter(is_active=False).first()
+            if temp:
+                temp.is_active = True
+                temp.save()
+
+        super(Address, self).delete(*args, **kwargs)

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
-from .models import User
+from .models import *
 from langdetect import detect
 
 
@@ -172,7 +172,8 @@ class PasswordChangeForm(forms.Form):
     new_password = forms.CharField(max_length=250, required=True,
                                    widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='رمز عبور جدید')
     new_password2 = forms.CharField(max_length=250, required=True,
-                                    widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='تایید رمز عبور جدید')
+                                    widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+                                    label='تایید رمز عبور جدید')
 
     def clean_new_password2(self):
         password1 = self.cleaned_data.get('new_password')
@@ -184,5 +185,16 @@ class PasswordChangeForm(forms.Form):
         return password2
 
 
+class AddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        fields = ('province', 'city', 'address', 'postal_code', 'receiver_name')
+        widgets = {
+            'province': forms.Select(attrs={'class': 'form-control'}),
+            'city': forms.Select(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'postal_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'receiver_name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
 
