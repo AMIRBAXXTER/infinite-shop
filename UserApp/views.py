@@ -116,6 +116,14 @@ def address_partial(request):
     return render(request, 'partials/user-address-partial.html', context)
 
 
+def form_partial(request):
+    form = AddressForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'partials/address-form.html', context)
+
+
 def get_city(request):
     province_id = request.GET.get('province_id')
     province = Province.objects.get(id=province_id)
@@ -126,30 +134,61 @@ def get_city(request):
     return JsonResponse(response)
 
 
+# def add_address(request):
+#     user = request.user
+#     province_id = request.GET.get('province_id')
+#     province = Province.objects.get(id=province_id)
+#     city_id = request.GET.get('city_id')
+#     city = City.objects.get(id=city_id)
+#     address = request.GET.get('address')
+#     postal_code = request.GET.get('postal_code')
+#     receiver_name = request.GET.get('receiver_name')
+#     submit_type = request.GET.get('submit_type')
+#     if submit_type == 'add':
+#         address = Address(user=user, province=province, city=city, address=address, postal_code=postal_code,
+#                           receiver_name=receiver_name)
+#         address.save()
+#     elif submit_type == 'edit':
+#         address_id = request.GET.get('address_id')
+#         edited_address = Address.objects.get(id=address_id)
+#         edited_address.province = province
+#         edited_address.city = city
+#         edited_address.address = address
+#         edited_address.postal_code = postal_code
+#         edited_address.receiver_name = receiver_name
+#         edited_address.save()
+#     user_addresses = user.addresses.all()
+#     context = {
+#         'user_addresses': user_addresses
+#     }
+#     return render(request, 'partials/user-address-partial.html', context)
 def add_address(request):
-    user = request.user
-    province_id = request.GET.get('province_id')
-    province = Province.objects.get(id=province_id)
-    city_id = request.GET.get('city_id')
-    city = City.objects.get(id=city_id)
-    address = request.GET.get('address')
-    postal_code = request.GET.get('postal_code')
-    receiver_name = request.GET.get('receiver_name')
     submit_type = request.GET.get('submit_type')
     if submit_type == 'add':
-        address = Address(user=user, province=province, city=city, address=address, postal_code=postal_code,
-                          receiver_name=receiver_name)
-        address.save()
+        form = AddressForm(request.GET)
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
+        else:
+            context = {
+                'form': form
+            }
+            return render(request, 'partials/address-form.html', context)
     elif submit_type == 'edit':
         address_id = request.GET.get('address_id')
-        edited_address = Address.objects.get(id=address_id)
-        edited_address.province = province
-        edited_address.city = city
-        edited_address.address = address
-        edited_address.postal_code = postal_code
-        edited_address.receiver_name = receiver_name
-        edited_address.save()
-    user_addresses = user.addresses.all()
+        address = Address.objects.get(id=address_id)
+        form = AddressForm(request.GET, instance=address)
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
+        else:
+            context = {
+                'form': form
+            }
+            return render(request, 'partials/address-form.html', context)
+    user_addresses = request.user.addresses.all()
     context = {
         'user_addresses': user_addresses
     }
@@ -182,8 +221,8 @@ def activate_address(request):
 def edit_address(request):
     address_id = request.GET.get('address_id')
     address = Address.objects.get(id=address_id)
-    edit_form = AddressForm(instance=address)
+    form = AddressForm(instance=address)
     context = {
-        'edit_form': edit_form,
+        'form': form,
     }
     return render(request, 'partials/address-form.html', context)

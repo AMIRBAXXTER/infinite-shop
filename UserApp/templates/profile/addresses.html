@@ -19,25 +19,8 @@
             <div class="row">
                 <form action="" method="post">
                     <div class="col-12 pt-3">
-                        <div class="row">
-
-                            {% for field in form %}
-                                <div class="col-12 col-md-{% if field.name == 'address' %}8{% else %}4{% endif %} pl-2">
-                                    <div class="form-group m-1">
-                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                        {{ field }}
-                                        {% if field.errors %}
-                                            <small class="form-text text-danger">{{ field.errors }}</small>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            {% endfor %}
-
-                            <div class="col-12">
-                                <div class="form-group m-1 pb-3">
-                                    <button id="submit-button" name="submit-type" value="add" type="submit"  onclick="addAddress()" class="login-button px-1">ثبت</button>
-                                </div>
-                            </div>
+                        <div id="form-cont" class="row">
+                            {% render_partial 'UserApp.views.form_partial' %}
                         </div>
                     </div>
                 </form>

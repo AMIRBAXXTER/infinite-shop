@@ -198,3 +198,15 @@ class AddressForm(forms.ModelForm):
         }
 
 
+    def clean_postal_code(self):
+        if self.cleaned_data['postal_code'] == '':
+            raise forms.ValidationError('postal code is required')
+        if len(self.cleaned_data['postal_code']) != 10:
+            raise forms.ValidationError('کد پستی باید 10 رقمی باشد.')
+        return self.cleaned_data['postal_code']
+
+
+    def clean_address(self):
+        if self.cleaned_data['address'] == '':
+            raise forms.ValidationError('address is required')
+        return self.cleaned_data['address']

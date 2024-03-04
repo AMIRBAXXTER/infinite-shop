@@ -164,26 +164,39 @@ function tabStyle() {
 function selectBoxOptions() {
     let citySelectBox = $('#id_city')
     let provincesSelectBox = $('#id_province')
-    citySelectBox.html('')
-    provincesSelectBox.on('change', function () {
-        let provinceId = this.value
-        $.ajax({
+    if (provincesSelectBox.val()){
+        selectBoxUpdate(citySelectBox.val())
+    }
+    citySelectBox.html('<option value="" selected="">---------</option>')
+    function selectBoxUpdate (prevCity) {
+        let provinceId = provincesSelectBox.val()
+        if (provinceId){
+            $.ajax({
             url: '/get-city/',
             method: 'GET',
             data: {
                 province_id: provinceId,
             },
             success: function (data) {
-                citySelectBox.html('')
+                citySelectBox.html('<option value="" selected="">---------</option>')
                 for (let city of data.cities) {
                     let option = document.createElement('option')
                     option.value = city[1]
                     option.innerHTML = city[0]
                     citySelectBox.append(option)
+                    console.log(prevCity)
+                    if (prevCity){
+                        citySelectBox.val(prevCity)
+                    }
                 }
             },
         })
-    })
+        }else {
+            citySelectBox.html('<option value="" selected="">---------</option>')
+        }
+
+    }
+    provincesSelectBox.on('change', selectBoxUpdate)
 
 }
 
@@ -202,8 +215,8 @@ function addAddress() {
         url: '/add-address/',
         method: 'GET',
         data: {
-            province_id: provinceId.value,
-            city_id: cityId.value,
+            province: provinceId.value,
+            city: cityId.value,
             address: address.value,
             postal_code: postalCode.value,
             receiver_name: receiverName.value,
@@ -211,12 +224,18 @@ function addAddress() {
             submit_type: submitButton.value,
         },
         success: function (res) {
-            console.log(res)
-            cityId.value = ''
+            cityId.innerHTML = '<option value="" selected="">---------</option>'
+            provinceId.value = ''
             address.value = ''
             postalCode.value = ''
             receiverName.value = ''
-            let container = $('#address-cont')
+            let container = null
+            if (res.includes('option')){
+                container = $('#form-cont')
+            }else {
+                container = $('#address-cont')
+            }
+
             container.html(res)
             let idInput = document.querySelector('#address-id')
             if (idInput){idInput.value = ''}
@@ -224,6 +243,7 @@ function addAddress() {
             submitButton.blur()
             submitButton.value = 'add'
             $('.address-title').text('افزودن آدرس جدید')
+            alert('آدرس با موفقیت ثبت شد.')
 
         },
     })
@@ -279,10 +299,15 @@ function editAddress(id) {
             address_id: id,
         },
         success: function (res) {
-            let container = $('#new-address')
+            let container = $('#form-cont')
             container.html(res)
             let idInput = document.querySelector('#address-id')
             idInput.value = id
+            let submitButton = document.querySelector('#submit-button')
+            submitButton.value = 'edit'
+            submitButton.innerHTML = 'ویرایش'
+            let title = document.querySelector('.address-title')
+            title.innerHTML = 'ویرایش آدرس'
             selectBoxOptions()
         },
     })
