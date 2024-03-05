@@ -39,11 +39,12 @@ INSTALLED_APPS = [
     # internal apps
     "IndexApp.apps.IndexAppConfig",
     "UserApp.apps.UserAppConfig",
+    "CartApp.apps.CartAppConfig",
+    "ProductsApp.apps.ProductsAppConfig",
     # external apps
     'sorl.thumbnail',
     'django_resized',
     'django_render_partial',
-    "ProductsApp.apps.ProductsAppConfig"
 ]
 
 MIDDLEWARE = [
@@ -70,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'CartApp.context_processors.cart',
             ],
         },
     },

@@ -1,0 +1,64 @@
+{% load humanize %}
+<div class="container">
+        <div class="row py-2">
+            <div class="col-6">
+                <div>جمع کل فاکتور:</div>
+            </div>
+            <div class="col-6">
+                <div><span
+                        id="factor-total-encode4365gbf265g43d">{{ cart.get_final_price|default:0 }}</span>
+                    تومان
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6">
+                <div>جمع قیمت محصولات:</div>
+            </div>
+            <div class="col-6">
+                <div><span
+                        id="factor-total-encode4365gbf265g43d">{{ cart.get_products_price|default:0 }}</span>
+                    تومان
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6">
+                <div>هزینه ی ارسال:</div>
+            </div>
+            <div class="col-6">
+                <div><span
+                        id="factor-total-encode4365gbf265g43d">{{ cart.get_post_price|intcomma:False|default:0 }}</span>
+                    تومان
+                </div>
+            </div>
+        </div>
+        <div class="row py-2 bg-light">
+            <div class="col-6">
+                <div>جمع تخفیف:</div>
+            </div>
+            <div class="col-6">
+                <div><span class="text-danger"
+                           id="factor-total-discount">{{ cart.get_off_price|intcomma:False|default:0 }}</span>
+                    تومان
+                </div>
+            </div>
+        </div>
+        <div class="row py-2" id="total">
+            <div class="col-6">
+                <div>مبلغ قابل پرداخت:</div>
+            </div>
+            <div class="col-6">
+                <div><span
+                        id="factor-total">{{ cart.get_payable_price|intcomma:False|default:0 }}</span>
+                    تومان
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-12">
+                <a href="checkout.html"><input type="submit" value="ادامه ثبت سفارش"
+                                               class="btn btn-success w-100"></a>
+            </div>
+        </div>
+    </div>

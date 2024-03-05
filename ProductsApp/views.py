@@ -10,6 +10,7 @@ from .models import *
 
 # Create your views here.
 def product_detail(request: HttpRequest, product_id):
+    # del request.session['cart']
     product: Product = Product.objects.select_related('brand').prefetch_related('category',
                                                                                 'rate',
                                                                                 'comment').filter(
@@ -108,6 +109,7 @@ def color_stock(request: HttpRequest):
     product = Product.objects.filter(id=product_id).first()
     stock = ProductColor.objects.filter(product=product, color=product_color).first()
     response = {
+        'id': stock.id,
         'stock': stock.stock,
         'title': stock.title,
         'color': stock.color,

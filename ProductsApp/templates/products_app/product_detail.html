@@ -14,6 +14,7 @@
     جزِِییات محصول
 {% endblock %}
 {% block content %}
+
     <section class="inner-page" id="product-page" data-id="{{ product.id }}">
         <div class="container-fluid" id="page-hero">
             <div class="row">
@@ -159,7 +160,7 @@
                                                     <span class="color-variable rounded-circle border-2{% if forloop.counter == 1 %} border-danger {% endif %}"
                                                           data-color="{{ color.color }}"><a
                                                             class="rounded-circle"
-                                                            onclick="colorStock({{ product.id }})" href="#"
+                                                            onclick="colorStock({{ product.id }})"
                                                             title="{{ color.title }}"
                                                             style="background-color: {{ color.color }}"></a></span>
                                                     {% if forloop.counter|divisibleby:4 %}
@@ -172,7 +173,8 @@
                                         <div class="col-12 col-sm-4 col-lg-3">
                                             <div class="variable">
                                                 <div class="sub-title pt-2 pb-2">تعداد</div>
-                                                <input type="number" min="1" max="10" class="form-control" value="1">
+                                                <input id="product-count" type="number" min="1"
+                                                       max="{{ product_color.stock }}" class="form-control" value="1">
                                             </div>
                                         </div>
                                     </div>
@@ -186,16 +188,19 @@
                                 <div class="cta-container pt-3 pt-md-5">
                                     <div class="row">
                                         <div class="col-12">
-
-                                            <button class="{% if not product.is_active %}unavailable-product-link{% endif %} btn btn-success px-4 px-lg-2 px-xl-4 btn-add-to-basket">
+                                            <input id="color-id-input" type="hidden">
+                                            <button onclick="addProductToCart({{ product.id }})"
+                                                    class="{% if not product.is_active %}unavailable-product-link{% endif %} btn btn-success px-4 px-lg-2 px-xl-4 btn-add-to-basket">
                                                 <i
                                                         class="fa fa-shopping-cart"></i> افزودن به سبد خرید
                                             </button>
 
                                             <br class="d-sm-none">
-                                            <a id="like" onclick="addProductToFavorite({{ product.id }})" class="btn bi bi-heart{% if user_favorited %}-fill{% endif %}  mt-1 mt-sm-0" style="color: red"
-                                                 data-toggle="tooltip" data-placement="top"
-                                                 title="افزودن به علاقه‌مندی"></a>
+                                            <a id="like" onclick="addProductToFavorite({{ product.id }})"
+                                               class="btn bi bi-heart{% if user_favorited %}-fill{% endif %}  mt-1 mt-sm-0"
+                                               style="color: red"
+                                               data-toggle="tooltip" data-placement="top"
+                                               title="افزودن به علاقه‌مندی"></a>
                                             <a href="#">
                                                 <div class="btn bi bi-book-half mt-1 mt-sm-0"
                                                      data-toggle="tooltip" data-placement="top" title="مقایسه"></div>
@@ -465,9 +470,9 @@
                                 <!-- /Product Item -->
 
                             </div>
-                                {% if not related_products.exists %}
-                                    <p class="alert alert-warning" >محصول مرتبطی موجود نیست.</p>
-                                {% endif %}
+                            {% if not related_products.exists %}
+                                <p class="alert alert-warning">محصول مرتبطی موجود نیست.</p>
+                            {% endif %}
                         </div>
                         <!-- /Suggested Products -->
                     </div>

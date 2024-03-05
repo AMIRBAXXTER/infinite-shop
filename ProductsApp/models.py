@@ -52,6 +52,7 @@ class Product(models.Model):
                                               verbose_name='درصد تخفیف')
     final_price = models.PositiveIntegerField(verbose_name='قیمت نهایی', blank=True, null=True)
     stock = models.PositiveIntegerField(verbose_name='موجودی')
+    weight = models.PositiveIntegerField(verbose_name='وزن به گرم')
     short_description = models.CharField(max_length=255, verbose_name='توضیحات کوتاه')
     long_description = models.TextField(verbose_name='توضیحات کامل')
     main_description = models.TextField(verbose_name='توضیحات اصلی')
@@ -72,6 +73,9 @@ class Product(models.Model):
 
     def get_absolut_url(self):
         return reverse('ProductsApp:product_detail', args=[self.id])
+
+    def off_price(self):
+        return self.price - self.final_price
 
     class Meta:
         indexes = [

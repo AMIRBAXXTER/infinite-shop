@@ -17,9 +17,14 @@ function colorStock(product_id) {
                 success: function (data) {
                     let colorStock = document.querySelector('#color-stock')
                     let colorTitle = document.querySelector('#color-title')
+                    let productCount = document.querySelector('#product-count')
+                    let stockInput = document.querySelector('#color-id-input')
                     colorStock.innerHTML = data.stock
                     colorTitle.innerHTML = data.title
                     colorTitle.setAttribute('style', `color: ${data.color};`)
+                    stockInput.value = data.id
+                    productCount.max = data.stock
+                    productCount.value = 1
                 },
             })
 
@@ -309,6 +314,97 @@ function editAddress(id) {
             let title = document.querySelector('.address-title')
             title.innerHTML = 'ویرایش آدرس'
             selectBoxOptions()
+        },
+    })
+}
+
+function addProductToCart(product_id) {
+    event.preventDefault()
+    let colorId = document.querySelector('#color-id-input').value
+    let count = document.querySelector('#product-count').value
+    if (count === '') {
+        count = 1
+    }
+
+    $.ajax({
+        url: '/add-to-cart/',
+        method: 'GET',
+        data: {
+            product_id: product_id,
+            color_id: colorId,
+            count: count
+        },
+        success: function (data) {
+            if (data.status === true) {
+                setTimeout(function () {
+                    alert('محصول با موفقیت اضافه شد.')
+                }, 500)
+            } else if (data.status === 'color_id') {
+                setTimeout(function () {
+                    alert('ابتدا یک رنگ انتخاب کنید.')
+                }, 500)
+            }else if (data.status == false){
+                setTimeout(function () {
+                    alert('متاسفانه خطایی رخ داد دوباره امتحان کنید.')
+                }, 500)
+            }
+        },
+    })
+}
+
+function emptyCart() {
+    event.preventDefault()
+    $.ajax({
+        url: '/empty-cart/',
+        method: 'GET',
+        success: function (data) {
+            if (data) {
+                let cartProducts = document.querySelector('#cart-products-partial')
+                cartProducts.innerHTML = data
+                setTimeout(function () {
+                    alert('سبد خرید شما خالی شد.')
+                }, 500)
+            } else {
+                setTimeout(function () {
+                    alert('خطایی رخ داد.')
+                }, 500)
+            }
+        },
+    })
+}
+
+function removeProduct() {
+    event.preventDefault()
+    let deleteButton = event.target.closest('.product-remove')
+    let productId = deleteButton.getAttribute('data-product-id')
+    let colorId = deleteButton.getAttribute('data-color-id')
+    $.ajax({
+        url: '/remove-product/',
+        method: 'GET',
+        data: {
+            product_id: productId,
+            color_id: colorId,
+        },
+        success: function (data) {
+            if (data) {
+                deleteButton.closest('.product').remove()
+                $('#factor').html(data)
+                if ($('.product').length === 0) {
+                    let cont = $('#products-cont')
+                    let div = document.createElement('div')
+                    div.className = 'col-12 alert alert-warning'
+                    div.innerHTML = 'محصولی در سبد خرید شما وجود ندارد.'
+                    cont.append(div)
+                }
+
+                setTimeout(function () {
+                    alert('محصول با موفقیت حذف شد.')
+                }, 500)
+            } else {
+                setTimeout(function () {
+                    alert('خطایی رخ داد.')
+                }, 500)
+            }
         },
     })
 }

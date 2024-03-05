@@ -1,0 +1,50 @@
+{% extends 'infinite shop/parent/parent.html' %}
+{% load render_partial %}
+{% load base %}
+{% load humanize %}
+{% load base %}
+{% load product_tags %}
+{% block header %}
+
+{% endblock %}
+{% block title %}
+    سبد خرید
+{% endblock %}
+{% block content %}
+    <section class="inner-page" id="cart-page">
+        <div class="container-fluid" id="page-hero">
+            <div class="row">
+                <div class="col-12">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 px-0">
+                                <h1>سبد خرید</h1>
+                                <p>مدیریت و خرید همزمان چند محصول</p>
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="index.html">صفحه نخست</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">سبد خرید</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div id="cart-products-partial" class="col-12">
+                    {% render_partial 'CartApp.views.cart_products' %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}
+{% block script %}
+
+{% endblock %}
