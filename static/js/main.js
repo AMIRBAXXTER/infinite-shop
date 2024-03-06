@@ -42,7 +42,6 @@ function setParentId(product_id) {
 function addComment(product_id) {
     event.preventDefault()
     let parentId = document.querySelector('#parent-id')
-    let comments = document.querySelector('#comments')
     let comment = document.querySelector('#comment-text')
     $.ajax({
         url: '/add-comment/',
@@ -169,38 +168,40 @@ function tabStyle() {
 function selectBoxOptions() {
     let citySelectBox = $('#id_city')
     let provincesSelectBox = $('#id_province')
-    if (provincesSelectBox.val()){
+    if (provincesSelectBox.val()) {
         selectBoxUpdate(citySelectBox.val())
     }
     citySelectBox.html('<option value="" selected="">---------</option>')
-    function selectBoxUpdate (prevCity) {
+
+    function selectBoxUpdate(prevCity) {
         let provinceId = provincesSelectBox.val()
-        if (provinceId){
+        if (provinceId) {
             $.ajax({
-            url: '/get-city/',
-            method: 'GET',
-            data: {
-                province_id: provinceId,
-            },
-            success: function (data) {
-                citySelectBox.html('<option value="" selected="">---------</option>')
-                for (let city of data.cities) {
-                    let option = document.createElement('option')
-                    option.value = city[1]
-                    option.innerHTML = city[0]
-                    citySelectBox.append(option)
-                    console.log(prevCity)
-                    if (prevCity){
-                        citySelectBox.val(prevCity)
+                url: '/get-city/',
+                method: 'GET',
+                data: {
+                    province_id: provinceId,
+                },
+                success: function (data) {
+                    citySelectBox.html('<option value="" selected="">---------</option>')
+                    for (let city of data.cities) {
+                        let option = document.createElement('option')
+                        option.value = city[1]
+                        option.innerHTML = city[0]
+                        citySelectBox.append(option)
+                        console.log(prevCity)
+                        if (prevCity) {
+                            citySelectBox.val(prevCity)
+                        }
                     }
-                }
-            },
-        })
-        }else {
+                },
+            })
+        } else {
             citySelectBox.html('<option value="" selected="">---------</option>')
         }
 
     }
+
     provincesSelectBox.on('change', selectBoxUpdate)
 
 }
@@ -215,7 +216,9 @@ function addAddress() {
     let addressId = document.querySelector('#address-id')
     let addressIdValue = null
     let submitButton = document.querySelector('#submit-button')
-    if (addressId){addressIdValue = addressId.value}
+    if (addressId) {
+        addressIdValue = addressId.value
+    }
     $.ajax({
         url: '/add-address/',
         method: 'GET',
@@ -235,15 +238,17 @@ function addAddress() {
             postalCode.value = ''
             receiverName.value = ''
             let container = null
-            if (res.includes('option')){
+            if (res.includes('option')) {
                 container = $('#form-cont')
-            }else {
+            } else {
                 container = $('#address-cont')
             }
 
             container.html(res)
             let idInput = document.querySelector('#address-id')
-            if (idInput){idInput.value = ''}
+            if (idInput) {
+                idInput.value = ''
+            }
             submitButton.innerHTML = 'ثبت'
             submitButton.blur()
             submitButton.value = 'add'
@@ -343,7 +348,7 @@ function addProductToCart(product_id) {
                 setTimeout(function () {
                     alert('ابتدا یک رنگ انتخاب کنید.')
                 }, 500)
-            }else if (data.status == false){
+            } else if (data.status === false) {
                 setTimeout(function () {
                     alert('متاسفانه خطایی رخ داد دوباره امتحان کنید.')
                 }, 500)
@@ -407,4 +412,45 @@ function removeProduct() {
             }
         },
     })
+}
+
+function updateCount(type) {
+    let datas = event.target.closest('.product')
+    let productId = datas.getAttribute('data-product-id')
+    let colorId = datas.getAttribute('data-color-id')
+    $.ajax({
+        url: '/update-count/',
+        method: 'GET',
+        data: {
+            type: type,
+            product_id: productId,
+            color_id: colorId,
+        },
+        success: function (data) {
+            $('#factor').html(data.html)
+            let offPrice = datas.querySelector('#off-price')
+            let finalPrice = datas.querySelector('#final-price')
+            offPrice.innerHTML = separateNumbers(data.off_price)
+            finalPrice.innerHTML = separateNumbers(data.final_price)
+            let inputCount = datas.querySelector('.number-input')
+            enforceMinMax(inputCount)
+        },
+    })
+}
+
+function enforceMinMax(el) {
+
+    if (el.value !== "") {
+        if (Number(el.value) < Number(el.min)) {
+            el.value = el.min;
+        }
+        if (Number(el.value) > Number(el.max)) {
+            el.value = el.max;
+            alert('موجودی محصول کافی نیست.')
+        }
+    }
+}
+
+function separateNumbers(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

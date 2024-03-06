@@ -77,6 +77,7 @@ class Product(models.Model):
     def off_price(self):
         return self.price - self.final_price
 
+
     class Meta:
         indexes = [
             models.Index(fields=['price']),

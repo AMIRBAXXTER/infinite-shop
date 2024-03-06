@@ -36,7 +36,133 @@
         <div class="container">
             <div class="row">
                 <div id="cart-products-partial" class="col-12">
-                    {% render_partial 'CartApp.views.cart_products' %}
+                    <div class="content">
+    <div class="row">
+        <div class="col-12 col-lg-9">
+            <div id="cart-products">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 py-3">
+                            <div class="pb-3" id="return-to-shop">می‌خواهید محصولات دیگری اضافه
+                                کنید؟ <a href="products.html">بازگشت به فروشگاه</a></div>
+                            <div id="products-cont" class="d-none d-md-block">
+                                <div class="row my-2" id="heading">
+                                    <div class="col-4">
+                                        <div>کالا</div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div>قیمت واحد</div>
+                                    </div>
+                                    <div class="col-2 pl-4">
+                                        <div>تعداد</div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div>تخفیف</div>
+                                    </div>
+                                    <div class="col-2 pr-0">
+                                        <div class="pr-3">قیمت نهایی</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% for item in cart %}
+                                <div class="row product" data-product-id="{{ item.product.id }}"
+                                     data-color-id="{{ item.color_id }}">
+                                    <div class="col-12 col-md-4">
+                                        <div class="row">
+                                            <div class="col-2 col-md-4 pl-0">
+                                                <img src="{{ item.product|product_main_image }}"
+                                                     alt={{ item.product.title }}"">
+                                            </div>
+                                            <div class="col-10 col-md-8">
+                                                <a href="{% url 'ProductsApp:product_detail' item.product.id %}"
+                                                   target="_blank">
+                                                    <div class="title pt-2">{{ item.product.title }}<span
+                                                            class="btn border border-3 rounded-circle"
+                                                            style="background-color: {{ item.color }}"></span>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-2">
+                                        <div class="d-md-none font-weight-bold">قیمت</div>
+                                        <div class="pt-1"><span
+                                                id="one-price"
+                                                class="product-encode4365gbf265g43d">{{ item.product.price|intcomma:False }}</span>
+                                            <span>تومان</span></div>
+                                    </div>
+                                    <div class="col-6 col-md-2 pl-4 pr-0 pr-md-3">
+                                        <div class="d-md-none font-weight-bold">تعداد</div>
+                                        <div class="input-group mb-3 order-number">
+                                            <div class="input-group-prepend">
+                                                <button onclick="updateCount('increase')"
+                                                        class="btn btn-outline-secondary btn-plus"
+                                                        type="button">+
+                                                </button>
+                                            </div>
+                                            <input oninput="enforceMinMax(this)" type="number" name="order-number[]"
+                                                   value="{{ item.quantity }}"
+                                                   class="form-control text-center order-number number-input"
+                                                   readonly min="0" max="{{ item.color_stock }}">
+                                            <div class="input-group-prepend">
+                                                <button onclick="updateCount('decrease')"
+                                                        class="btn btn-outline-secondary btn-minus"
+                                                        type="button">_
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-2">
+                                        <div class="d-md-none font-weight-bold">تخفیف</div>
+                                        <div>
+                                            <span id="off-price">{{ item.product.off_price|multiply:item.quantity|intcomma:False }}</span>
+                                            <span>تومان</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-2 pr-0">
+                                        <div class="d-md-none font-weight-bold">قیمت نهایی</div>
+                                        <div class="pt-1 pr-2 bg-light"><span
+                                                id="final-price"
+                                                class="product-total">{{ item.product.final_price|multiply:item.quantity|intcomma:False }}</span>
+                                            <span>تومان</span></div>
+                                        <a onclick="removeProduct()"
+                                           class="product-remove btn-remove-from-basket w-auto send-reply"
+                                           data-product-id="{{ item.product.id }}" data-color-id="{{ item.color_id }}">
+                                            <div class="small pl-2"><i class="fa fa-times"></i> حذف
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="col-12 alert alert-warning">محصولی در سبد خرید شما وجود
+                                    ندارد.
+                                </div>
+                            {% endfor %}
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <a onclick="emptyCart()"
+                                       class="product-remove btn-remove-from-basket send-reply"
+                                       data-id="all">
+                                        <div class="float-end small pl-2 font-weight-bold">خالی کردن
+                                            سبد
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3 mt-2 mt-lg-0 pr-3 pr-lg-0">
+            <div id="factor">
+                {% render_partial 'CartApp.views.cart_prices' %}
+            </div>
+        </div>
+    </div>
+</div>
                 </div>
             </div>
         </div>

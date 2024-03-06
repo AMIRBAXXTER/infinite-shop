@@ -21,12 +21,19 @@ def add_to_cart(request):
 
 def cart(request):
     cart = Cart(request)
+    for item in cart.__iter__(include_product=False):
+        cart.add(item['id'], item['color_id'])
     return render(request, 'cart_app/cart.html', {'cart': cart})
 
 
 def cart_products(request):
     cart = Cart(request)
     return render(request, 'partials/cart-partial.html', {'cart': cart})
+
+
+def cart_prices(request):
+    cart = Cart(request)
+    return render(request, 'partials/price-partial.html', {'cart': cart})
 
 
 def empty_cart(request):
@@ -41,3 +48,23 @@ def remove_product(request):
     cart = Cart(request)
     cart.remove(product_id, color_id)
     return render(request, 'partials/price-partial.html', {'cart': cart})
+
+
+def update_count(request):
+    update_type = request.GET.get('type')
+    product_id = request.GET.get('product_id')
+    color_id = request.GET.get('color_id')
+    cart = Cart(request)
+    if update_type == 'increase':
+        cart.increase(product_id, color_id)
+    elif update_type == 'decrease':
+        cart.decrease(product_id, color_id)
+    html = render(request, 'partials/price-partial.html', {'cart': cart})
+    off_price = cart.get_off_price(product_id, color_id)
+    final_price = cart.get_final_price(product_id, color_id)
+    response = {
+        'off_price': off_price,
+        'final_price': final_price,
+        'html': html.content.decode('utf-8')
+    }
+    return JsonResponse(response)
