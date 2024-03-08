@@ -10,7 +10,6 @@ from .models import *
 
 # Create your views here.
 def product_detail(request: HttpRequest, product_id):
-    # del request.session['cart']
     product: Product = Product.objects.select_related('brand').prefetch_related('category',
                                                                                 'rate',
                                                                                 'comment').filter(
@@ -19,7 +18,10 @@ def product_detail(request: HttpRequest, product_id):
     if product is None:
         raise Http404
     avg = int(product.average_rate)
-    user_favorited = product.favorites.filter(user=user).exists()
+    if user.is_authenticated:
+        user_favorited = product.favorites.filter(user=user).exists()
+    else:
+        user_favorited = False
     blank_star = 5 - avg
     main_category = product.category.filter(parent=None).first()
     product_comments = ProductComment.objects.filter(product=product, parent=None).order_by('-created_at')
@@ -28,8 +30,6 @@ def product_detail(request: HttpRequest, product_id):
     product_properties = ProductProperty.objects.filter(product=product)
     related_products = Product.objects.filter(category__in=product.category.all()).order_by('-created_at').exclude(
         id=product.id).distinct()
-    print(request.META.get('REMOTE_ADDR'))
-    print(request.META.get('HTTP_X_FORWARDED_FOR'))
 
     if request.method == 'GET':
         ip = request.META.get('REMOTE_ADDR') or request.META.get('HTTP_X_FORWARDED_FOR')

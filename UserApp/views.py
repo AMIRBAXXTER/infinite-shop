@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
+from CartApp.cart import Cart
+from CartApp.models import CartModel, CartItem
 from ProductsApp.models import Product
 from .forms import *
 from .models import User
@@ -21,6 +23,13 @@ def user_login(request):
             if user:
                 if user.is_active:
                     login(request, user)
+                    cart_model = CartModel.objects.filter(user=user, status='1').first()
+                    products = CartItem.objects.filter(cart=cart_model)
+                    cart = Cart(request)
+                    cart.clear()
+                    cart = Cart(request)
+                    for item in products:
+                        cart.add(item.product.id, item.color_id, item.quantity)
                     return redirect('UserApp:profile')
 
     else:
@@ -37,6 +46,9 @@ def user_register(request):
                                      last_name=cd['last_name'])
             user = authenticate(phone=cd['phone'], password=cd['password'])
             login(request, user)
+            cart = Cart(request)
+            for item in cart.__iter__(include_product=False):
+                cart.new_user_add(item['id'], item['color_id'], item['quantity'], user=request.user)
             return redirect('IndexApp:index')
     else:
         form = UserRegisterForm()

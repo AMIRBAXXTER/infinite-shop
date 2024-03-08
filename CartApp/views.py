@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 from CartApp.cart import Cart
@@ -13,7 +14,7 @@ def add_to_cart(request):
             return JsonResponse({'status': "color_id"})
         count = request.GET.get('count')
         cart = Cart(request)
-        cart.add(product_id, product_color_id, count)
+        cart.add(product_id, product_color_id, count, user=request.user)
         return JsonResponse({'status': True})
     except:
         return JsonResponse({'status': False})
@@ -22,7 +23,7 @@ def add_to_cart(request):
 def cart(request):
     cart = Cart(request)
     for item in cart.__iter__(include_product=False):
-        cart.add(item['id'], item['color_id'])
+        cart.add(item['id'], item['color_id'], user=request.user)
     return render(request, 'cart_app/cart.html', {'cart': cart})
 
 
@@ -38,7 +39,7 @@ def cart_prices(request):
 
 def empty_cart(request):
     cart = Cart(request)
-    cart = cart.clear()
+    cart = cart.clear(request.user)
     return render(request, 'partials/cart-partial.html', {'cart': cart})
 
 
@@ -46,7 +47,7 @@ def remove_product(request):
     product_id = request.GET.get('product_id')
     color_id = request.GET.get('color_id')
     cart = Cart(request)
-    cart.remove(product_id, color_id)
+    cart.remove(product_id, color_id, request.user)
     return render(request, 'partials/price-partial.html', {'cart': cart})
 
 
@@ -56,9 +57,9 @@ def update_count(request):
     color_id = request.GET.get('color_id')
     cart = Cart(request)
     if update_type == 'increase':
-        cart.increase(product_id, color_id)
+        cart.increase(product_id, color_id, request.user)
     elif update_type == 'decrease':
-        cart.decrease(product_id, color_id)
+        cart.decrease(product_id, color_id, request.user)
     html = render(request, 'partials/price-partial.html', {'cart': cart})
     off_price = cart.get_off_price(product_id, color_id)
     final_price = cart.get_final_price(product_id, color_id)
@@ -68,3 +69,13 @@ def update_count(request):
         'html': html.content.decode('utf-8')
     }
     return JsonResponse(response)
+
+@login_required
+def checkout(request):
+    cart = Cart(request)
+    active_address = request.user.addresses.filter(is_active=True).first()
+    context = {
+        'cart': cart,
+        'active_address': active_address
+    }
+    return render(request, 'cart_app/checkout.html', context)

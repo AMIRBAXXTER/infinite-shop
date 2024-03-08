@@ -1,6 +1,8 @@
 from django.http import HttpRequest, Http404
 
+from CartApp.models import CartModel, CartItem
 from ProductsApp.models import Product, ProductColor
+from UserApp.models import User
 
 
 class Cart:
@@ -11,7 +13,7 @@ class Cart:
             cart = self.session['cart'] = {}
         self.cart = cart
 
-    def add(self, product_id: int, product_color_id: int, count: int = 1):
+    def add(self, product_id: int, product_color_id: int, count: int = 1, user: User = None):
         product: Product = Product.objects.get(id=product_id)
         product_color = ProductColor.objects.get(id=product_color_id, product=product)
         cart_key = f'{product_id},{product_color_id}'
@@ -28,35 +30,93 @@ class Cart:
                     'weight': product.weight,
                     'quantity': int(count),
                 }
+                self.save()
+            if user is not None:
+                if user.is_authenticated:
+                    cart_model, created = CartModel.objects.get_or_create(user=user, status='1')
+                    cart_item = CartItem.objects.create(cart=cart_model, product=product, color_id=product_color.id,
+                                                        price=product.price, final_price=product.final_price,
+                                                        color=product_color.color, color_stock=product_color.stock,
+                                                        weight=product.weight, quantity=int(count))
+                    cart_item.save()
         else:
             self.cart[cart_key]['price'] = product.price
             self.cart[cart_key]['final_price'] = product.final_price
             self.cart[cart_key]['weight'] = product.weight
+            self.cart[cart_key]['color_stock'] = product_color.stock
 
-        self.save()
+            self.save()
+            if user is not None:
+                if user.is_authenticated:
+                    cart_model = CartModel.objects.filter(user=user, status='1').first()
+                    cart_item = CartItem.objects.get(cart=cart_model, product=product, color_id=product_color.id)
+                    cart_item.price = product.price
+                    cart_item.final_price = product.final_price
+                    cart_item.weight = product.weight
+                    cart_item.color_stock = product_color.stock
+                    cart_item.save()
 
-    def increase(self, product_id: int, product_color_id: int):
+    def new_user_add(self, product_id: int, product_color_id: int, count: int = 1, user: User = None):
+        product: Product = Product.objects.get(id=product_id)
+        product_color = ProductColor.objects.get(id=product_color_id, product=product)
+
+        cart_model, created = CartModel.objects.get_or_create(user=user, status='1')
+        if int(product_color.stock) >= int(count):
+            cart_item = CartItem.objects.create(cart=cart_model, product=product, color_id=product_color.id,
+                                                price=product.price, final_price=product.final_price,
+                                                color=product_color.color, color_stock=product_color.stock,
+                                                weight=product.weight, quantity=int(count))
+            cart_item.save()
+
+    def increase(self, product_id: int, product_color_id: int, user: User =None):
         product = Product.objects.get(id=product_id)
         product_color = ProductColor.objects.get(id=product_color_id, product=product)
         if int(self.cart[f'{product_id},{product_color_id}']['quantity']) < int(product_color.stock):
             self.cart[f'{product_id},{product_color_id}']['quantity'] += 1
-        self.save()
+            self.save()
+            if user is not None:
+                if user.is_authenticated:
+                    print('ok')
+                    product = Product.objects.get(id=product_id)
+                    product_color = ProductColor.objects.get(id=product_color_id, product=product)
+                    cart_model = CartModel.objects.filter(user=user, status='1').first()
+                    cart_item = CartItem.objects.get(cart=cart_model, product=product, color_id=product_color.id)
+                    cart_item.quantity += 1
+                    cart_item.save()
 
-    def decrease(self, product_id: int, product_color_id: int):
-        product = Product.objects.get(id=product_id)
-        product_color = ProductColor.objects.get(id=product_color_id, product=product)
+    def decrease(self, product_id: int, product_color_id: int, user: User = None):
+
         if int(self.cart[f'{product_id},{product_color_id}']['quantity']) > 1:
             self.cart[f'{product_id},{product_color_id}']['quantity'] -= 1
-        self.save()
+            self.save()
+            if user is not None:
+                if user.is_authenticated:
+                    product = Product.objects.get(id=product_id)
+                    product_color = ProductColor.objects.get(id=product_color_id, product=product)
+                    cart_model = CartModel.objects.filter(user=user, status='1').first()
+                    cart_item = CartItem.objects.get(cart=cart_model, product=product, color_id=product_color.id)
+                    cart_item.quantity -= 1
+                    cart_item.save()
 
-    def remove(self, product_id: int, product_color_id: int):
+    def remove(self, product_id: int, product_color_id: int, user: User =None):
         if self.cart[f'{product_id},{product_color_id}']:
             del self.cart[f'{product_id},{product_color_id}']
         self.save()
+        if user is not None:
+            if user.is_authenticated:
+                product = Product.objects.get(id=product_id)
+                product_color = ProductColor.objects.get(id=product_color_id, product=product)
+                cart_model = CartModel.objects.filter(user=user, status='1').first()
+                cart_item = CartItem.objects.get(cart=cart_model, product=product, color_id=product_color.id)
+                cart_item.delete()
 
-    def clear(self):
+    def clear(self, user: User =None):
         del self.session['cart']
         self.save()
+        if user is not None:
+            if user.is_authenticated:
+                cart_model = CartModel.objects.filter(user=user, status='1').first()
+                cart_model.delete()
 
     def get_post_price(self):
         weight = sum(int(item['weight']) * int(item['quantity']) for item in self.cart.values())
@@ -107,3 +167,6 @@ class Cart:
 
     def save(self):
         self.session.save()
+
+    def copy(self):
+        return self.cart.copy()

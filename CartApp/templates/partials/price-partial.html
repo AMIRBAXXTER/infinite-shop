@@ -57,8 +57,13 @@
     </div>
     <div class="row py-2">
         <div class="col-12">
-            <a href="checkout.html"><input type="submit" value="ادامه ثبت سفارش"
+            {% if request.user.is_authenticated %}
+            	<a href="{% url 'CartApp:checkout' %}"><input type="submit" value="ادامه ثبت سفارش"
                                            class="btn btn-success w-100"></a>
+            {% else %}
+                <p>برای ادامه فرآیند خرید باید ثبت نام کنید </p><a href="{% url 'UserApp:login' %}">ثبت نام/ورود</a>
+            {% endif %}
+
         </div>
     </div>
 </div>

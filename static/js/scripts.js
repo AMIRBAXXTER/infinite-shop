@@ -120,7 +120,7 @@ $(function() {
     /* /Num Format Functions */
 
     /* Products Carousel */
-    if($('.products-carousel').length > 0) {
+    if($('.products-carousel').length > 4) {
         var owl = $('.products-carousel');
         owl.owlCarousel({
             rtl: true,
@@ -130,6 +130,28 @@ $(function() {
             nav: false,
             dots: false,
             loop: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                768: {
+                    items: 3
+                },
+                1000: {
+                    items: 4
+                }
+            }
+        })
+    }else{
+        var owl = $('.products-carousel');
+        owl.owlCarousel({
+            rtl: true,
+            autoplay: false,
+            autoplayHoverPause: true,
+            margin: 25,
+            nav: false,
+            dots: false,
+            loop: false,
             responsive: {
                 0: {
                     items: 1

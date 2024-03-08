@@ -71,7 +71,7 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
-    def get_absolut_url(self):
+    def get_absolute_url(self):
         return reverse('ProductsApp:product_detail', args=[self.id])
 
     def off_price(self):

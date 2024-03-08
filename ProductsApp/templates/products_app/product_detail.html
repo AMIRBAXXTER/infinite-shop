@@ -182,7 +182,7 @@
                                 </div>
                                 <span class="border-2 border p-2">موجودی محصول : {{ product.stock }}</span>
                                 <span class="border-2 border p-2">موجودی رنگ <span
-                                        class="fw-bolder" id="color-title"
+                                        class="black-border fw-bolder" id="color-title"
                                         style="color: {{ product_color.color }}">{{ product_color.title }}</span> : <span
                                         id="color-stock">{{ product_color.stock }}</span></span>
                                 <div class="cta-container pt-3 pt-md-5">
@@ -196,15 +196,15 @@
                                             </button>
 
                                             <br class="d-sm-none">
-                                            <a id="like" onclick="addProductToFavorite({{ product.id }})"
+                                            {% if request.user.is_authenticated %}
+                                                <a id="like" onclick="addProductToFavorite({{ product.id }})"
                                                class="btn bi bi-heart{% if user_favorited %}-fill{% endif %}  mt-1 mt-sm-0"
                                                style="color: red"
                                                data-toggle="tooltip" data-placement="top"
                                                title="افزودن به علاقه‌مندی"></a>
-                                            <a href="#">
-                                                <div class="btn bi bi-book-half mt-1 mt-sm-0"
-                                                     data-toggle="tooltip" data-placement="top" title="مقایسه"></div>
-                                            </a>
+
+                                            {% endif %}
+
                                         </div>
                                     </div>
                                 </div>
