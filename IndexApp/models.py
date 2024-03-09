@@ -19,6 +19,23 @@ class SiteInfo(models.Model):
                                          verbose_name='تصویر درباره ما')
 
 
+    def __str__(self):
+        return self.title
+
+
+class MainPictures(models.Model):
+    site_info = models.ForeignKey(SiteInfo, on_delete=models.CASCADE, related_name='main_pictures')
+    picture = ResizedImageField(upload_to='main_picture', null=True, crop=['middle', 'center'], size=[966, 353],
+                                quality=100,
+                                verbose_name='تصویر اصلی')
+
+class SidePicture(models.Model):
+    site_info = models.ForeignKey(SiteInfo, on_delete=models.CASCADE, related_name='side_pictures')
+    picture = ResizedImageField(upload_to='side_picture', null=True, crop=['middle', 'center'], size=[261, 106],
+                                     quality=100,
+                                     verbose_name='تصویر کناری')
+
+
 class TeamMember(models.Model):
     site_info = models.ForeignKey(SiteInfo, on_delete=models.CASCADE, related_name='team_members')
     profile_pic = ResizedImageField(upload_to='team_member', blank=True, null=True, size=[185, 115],
@@ -29,4 +46,3 @@ class TeamMember(models.Model):
 
     def __str__(self):
         return self.fullname
-

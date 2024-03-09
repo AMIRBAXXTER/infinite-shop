@@ -33,7 +33,9 @@ class Cart:
                 self.save()
             if user is not None:
                 if user.is_authenticated:
-                    cart_model, created = CartModel.objects.get_or_create(user=user, status='1')
+                    address_id = user.addresses.filter(is_active=True).first().id
+                    cart_model, created = CartModel.objects.get_or_create(user=user, status='1',
+                                                                          address_id=address_id)
                     cart_item = CartItem.objects.create(cart=cart_model, product=product, color_id=product_color.id,
                                                         price=product.price, final_price=product.final_price,
                                                         color=product_color.color, color_stock=product_color.stock,
@@ -68,7 +70,7 @@ class Cart:
                                                 weight=product.weight, quantity=int(count))
             cart_item.save()
 
-    def increase(self, product_id: int, product_color_id: int, user: User =None):
+    def increase(self, product_id: int, product_color_id: int, user: User = None):
         product = Product.objects.get(id=product_id)
         product_color = ProductColor.objects.get(id=product_color_id, product=product)
         if int(self.cart[f'{product_id},{product_color_id}']['quantity']) < int(product_color.stock):
@@ -98,7 +100,7 @@ class Cart:
                     cart_item.quantity -= 1
                     cart_item.save()
 
-    def remove(self, product_id: int, product_color_id: int, user: User =None):
+    def remove(self, product_id: int, product_color_id: int, user: User = None):
         if self.cart[f'{product_id},{product_color_id}']:
             del self.cart[f'{product_id},{product_color_id}']
         self.save()
@@ -110,7 +112,7 @@ class Cart:
                 cart_item = CartItem.objects.get(cart=cart_model, product=product, color_id=product_color.id)
                 cart_item.delete()
 
-    def clear(self, user: User =None):
+    def clear(self, user: User = None):
         del self.session['cart']
         self.save()
         if user is not None:
@@ -150,6 +152,9 @@ class Cart:
 
     def get_payable_price(self):
         return self.get_total_final_price() - self.get_total_off_price()
+
+    def count(self):
+        return sum(int(item['quantity']) for item in self.cart.values())
 
     def __len__(self):
         return sum(int(item['quantity']) for item in self.cart.values())

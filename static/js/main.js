@@ -75,6 +75,17 @@ function orderFilterStyle() {
 
 window.onload = orderFilterStyle
 
+function headerStyle() {
+    let currentUrl = '/' + window.location.href.split('/')[3] + '/'
+    for (let link of document.querySelectorAll('.header-tabs')) {
+        if (currentUrl === link.getAttribute('href')) {
+            link.classList.add('bg-warning')
+        }
+    }
+}
+
+window.onload = headerStyle
+
 function orderBy(type) {
     event.preventDefault()
     const form = document.querySelector('#order-form')
@@ -105,8 +116,10 @@ function sliderRange(max) {
         });
 
         slider.noUiSlider.on('update', function (values) {
-            $('#encode4365gbf265g43d-range-from').text(Math.round(values[0]));
-            $('#encode4365gbf265g43d-range-to').text(Math.round(values[1]));
+            let from = $('#encode4365gbf265g43d-range-from')
+            let to = $('#encode4365gbf265g43d-range-to')
+            from.text(separateNumbers(Math.round(values[0])));
+            to.text(separateNumbers(Math.round(values[1])));
         });
     }
 }
@@ -157,8 +170,6 @@ function tabStyle() {
     let currentUrl = window.location.href
     let tabs = document.querySelectorAll('.profile-tab')
     tabs.forEach(function (element) {
-        console.log(element.getAttribute('href'))
-        console.log(currentUrl)
         if (currentUrl.includes(element.getAttribute('href'))) {
             element.classList.add('active')
         }
@@ -341,6 +352,7 @@ function addProductToCart(product_id) {
         },
         success: function (data) {
             if (data.status === true) {
+                $('#cart-count').html(data.cart_count)
                 setTimeout(function () {
                     alert('محصول با موفقیت اضافه شد.')
                 }, 500)
@@ -365,7 +377,8 @@ function emptyCart() {
         success: function (data) {
             if (data) {
                 let cartProducts = document.querySelector('#cart-products-partial')
-                cartProducts.innerHTML = data
+                cartProducts.innerHTML = data.html
+                $('#cart-count').html(data.cart_count)
                 setTimeout(function () {
                     alert('سبد خرید شما خالی شد.')
                 }, 500)
@@ -393,7 +406,8 @@ function removeProduct() {
         success: function (data) {
             if (data) {
                 deleteButton.closest('.product').remove()
-                $('#factor').html(data)
+                $('#factor').html(data.html)
+                $('#cart-count').html(data.cart_count)
                 if ($('.product').length === 0) {
                     let cont = $('#products-cont')
                     let div = document.createElement('div')
@@ -434,6 +448,7 @@ function updateCount(type) {
             finalPrice.innerHTML = separateNumbers(data.final_price)
             let inputCount = datas.querySelector('.number-input')
             enforceMinMax(inputCount)
+            $('#cart-count').html(data.cart_count)
         },
     })
 }

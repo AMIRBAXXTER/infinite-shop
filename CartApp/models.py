@@ -1,7 +1,7 @@
 from django.db import models
 
 from ProductsApp.models import Product
-from UserApp.models import User
+from UserApp.models import User, Address
 
 
 # Create your models here.
@@ -16,6 +16,7 @@ class CartModel(models.Model):
     ]
     cart_random_number = models.CharField(max_length=10, unique=True, blank=True, verbose_name='شماره سفارش')
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='کاربر')
+    address = models.ForeignKey(Address, on_delete=models.CASCADE, verbose_name='آدرس')
     status = models.CharField(max_length=10, default='1', choices=status, verbose_name='وضعیت')
     total_price = models.PositiveIntegerField(default=0, verbose_name='مبلغ')
     payment_date = models.DateTimeField(null=True, blank=True, verbose_name='تاریخ پرداخت')

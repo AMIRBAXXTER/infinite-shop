@@ -8,8 +8,22 @@ class TeamMemberInline(admin.StackedInline):
     extra = 0
 
 
+class MainPictureINline(admin.StackedInline):
+    model = MainPictures
+    extra = 0
+
+
+class SidePictureINline(admin.StackedInline):
+    model = SidePicture
+    extra = 0
+
+
 # Register your models here.
 @admin.register(SiteInfo)
 class SiteInfoAdmin(admin.ModelAdmin):
     list_display = ('title', 'phone', 'email', 'is_active')
-    inlines = [TeamMemberInline]
+    inlines = [
+        TeamMemberInline,
+        MainPictureINline,
+        SidePictureINline
+    ]
