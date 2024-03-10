@@ -22,27 +22,25 @@
                     </a>
                 </div>
                 <div class="col-12 col-md-5 col-xl-6">
-                    <div id="search-bar">
-                        <i class="fa fa-search"></i>
-                        <label>
-                            <input type="text" placeholder="جستجو کنید...">
-                        </label>
-                    </div>
+                    <form method="POST" action="{% url 'IndexApp:search' %}">
+                        {% csrf_token %}
+                        <div class="input-group">
+
+                            <input {% if query %}value="{{ query }}"{% endif %}  name="query" type="text" class="form-control" placeholder="جستجو کنید">
+
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-warning" type="submit">جستجو</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="col-12 col-md-4">
                     <div class="row">
-                        <div class="d-flex col-12 col-md-7 col-lg-6  text-center" id="btn-login-register">
-                            {% if request.user.is_authenticated %}
-                                <a class="login-button justify-content-sm-start" href="{% url 'UserApp:profile' %}">پروفایل</a>
-                            {% else %}
-                                <a class="login-button justify-content-sm-start"
-                                   href="{% url 'UserApp:login' %}">ورود</a>
-                            {% endif %}
-                        </div>
-                        <div class="col-12 col-md-5 col-lg-6">
+                        <div class="col-12 col-md-5 col-lg-6 position-relative start-50">
                             <a href="{% url 'CartApp:cart' %}">
                                 <div class="btn btn-warning w-100"><i class="fa fa-shopping-cart"></i>&nbsp;<span
-                                        class="d-md-none d-lg-inline-block">سبد خرید</span>( <span id="cart-count">{{ cart.count }}</span> ) 
+                                        class="d-md-none d-lg-inline-block">سبد خرید</span>( <span
+                                        id="cart-count">{{ cart.count }}</span> )
                                 </div>
                             </a>
                         </div>
@@ -69,6 +67,15 @@
                                     <div class="droopmenu-navi">
                                         <ul class="droopmenu">
                                             <li>
+                                                {% if request.user.is_authenticated %}
+                                                    <a class="header-tabs"
+                                                       href="{% url 'UserApp:profile' %}">پروفایل</a>
+                                                {% else %}
+                                                    <a class="header-tabs"
+                                                       href="{% url 'UserApp:login' %}">ورود</a>
+                                                {% endif %}
+                                            </li>
+                                            <li>
                                                 <a class="header-tabs" href="{% url 'IndexApp:index' %}">صفحه نخست</a>
                                             </li>
                                             <li>
@@ -78,6 +85,7 @@
                                                 <a class="header-tabs" href="{% url 'IndexApp:about_us' %}">درباره
                                                     ما</a>
                                             </li>
+
                                             {% if request.user.is_superuser %}
                                                 <li>
                                                     <a target="_blank" class="header-tabs" href="/admin">پنل ادمین</a>

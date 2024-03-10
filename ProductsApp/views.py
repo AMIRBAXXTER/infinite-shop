@@ -128,9 +128,11 @@ def product_comment(request: HttpRequest):
     new_comment = ProductComment(product=product, user=user, comment=comment, parent=parent)
     new_comment.save()
     comments = ProductComment.objects.filter(product=product, parent=None).order_by('-created_at')
+    product_all_comments = ProductComment.objects.filter(product=product)
 
     context = {
-        'product_comments': comments
+        'product_comments': comments,
+        'product_all_comments': product_all_comments
     }
     return render(request, 'partials/comments_partial.html', context)
 

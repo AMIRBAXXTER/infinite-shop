@@ -43,15 +43,20 @@
                                 <form method="post">
                                     {% csrf_token %}
                                     {% for field in form %}
-                                        {{ field.label_tag  }}
+                                        {{ field.label_tag }}
                                         {{ field }}
                                     {% endfor %}
 
-                                    <a href="{% url 'UserApp:register' %}">ثبت نام نکرده اید؟</a>
-                                    {% for field in form %}
+                                    <a class="d-block my-2" href="{% url 'UserApp:register' %}">ثبت نام کنید</a>
+                                    <a class="d-block" href="{% url 'UserApp:password_reset' %}">فراموشی رمز عبور</a>
+                                    {% if form.errors %}
+                                        {% for field in form %}
                                             <span class="form-text text-danger m-5">{{ field.errors }}</span>
-                                    {% endfor %}
-                                    <button type="submit" class="btn btn-primary mt-2">ورود</button>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    <br>
+                                    <button type="submit" class="btn btn-primary mt-4">ورود</button>
                                 </form>
 
                             </div>

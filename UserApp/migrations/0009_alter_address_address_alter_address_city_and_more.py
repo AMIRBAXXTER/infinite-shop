@@ -21,13 +21,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='address',
             name='city',
-            field=models.ForeignKey(default='g', on_delete=django.db.models.deletion.CASCADE, related_name='addresses', to='UserApp.city', verbose_name='شهر'),
+            field=models.ForeignKey(default='', on_delete=django.db.models.deletion.CASCADE, related_name='addresses', to='UserApp.city', verbose_name='شهر'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='address',
             name='postal_code',
-            field=models.CharField(default='g', max_length=10, verbose_name='کد پستی'),
+            field=models.CharField(default='', max_length=10, verbose_name='کد پستی'),
             preserve_default=False,
         ),
         migrations.AlterField(

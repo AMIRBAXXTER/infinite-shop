@@ -43,7 +43,8 @@ function addComment(product_id) {
     event.preventDefault()
     let parentId = document.querySelector('#parent-id')
     let comment = document.querySelector('#comment-text')
-    $.ajax({
+    if (comment.value.trim() !== ''){
+        $.ajax({
         url: '/add-comment/',
         method: 'GET',
         data: {
@@ -61,6 +62,8 @@ function addComment(product_id) {
             }
         },
     })
+    }
+
 
 }
 
@@ -76,7 +79,8 @@ function orderFilterStyle() {
 window.onload = orderFilterStyle
 
 function headerStyle() {
-    let currentUrl = '/' + window.location.href.split('/')[3] + '/'
+    let currentUrl = '/' + window.location.href.split('/')[3]
+    if (currentUrl !== "/"){currentUrl += '/'}
     for (let link of document.querySelectorAll('.header-tabs')) {
         if (currentUrl === link.getAttribute('href')) {
             link.classList.add('bg-warning')
@@ -469,3 +473,4 @@ function enforceMinMax(el) {
 function separateNumbers(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+

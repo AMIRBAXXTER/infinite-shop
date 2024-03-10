@@ -1,6 +1,9 @@
+from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Count
+from django.http import JsonResponse
 from django.shortcuts import render
 
+from IndexApp.forms import SearchForm
 from IndexApp.models import *
 from ProductsApp.models import Product
 
@@ -49,3 +52,17 @@ def footer(request):
         'site_info': site_info
     }
     return render(request, 'infinite shop/partial/footer.html', context)
+
+
+def search(request):
+    if request.method == 'POST':
+        query = request.POST.get('query')
+        result1 = Product.objects.annotate(similarity=TrigramSimilarity('title', query)).filter(similarity__gt=0.1)
+        result2 = Product.objects.annotate(similarity=TrigramSimilarity('short_description', query)).filter(
+            similarity__gt=0.01)
+        products = (result1 | result2).order_by('-similarity')
+        context = {
+            'products': products,
+            'query': query
+        }
+        return render(request, 'index_app/search.html', context)
