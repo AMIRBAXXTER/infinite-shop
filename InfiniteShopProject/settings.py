@@ -29,6 +29,7 @@ ALLOWED_HOSTS = ['127.0.0.1', '127.0.0.1:8000', 'localhost', 'localhost:8000']
 # Application definition
 
 INSTALLED_APPS = [
+    "UserApp.apps.UserAppConfig",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     # internal apps
     "IndexApp.apps.IndexAppConfig",
-    "UserApp.apps.UserAppConfig",
     "CartApp.apps.CartAppConfig",
     "ProductsApp.apps.ProductsAppConfig",
     # external apps
@@ -153,3 +153,10 @@ CSRF_COOKIE_SECURE = True
 
 SANDBOX = True
 MERCHANT = "1344b5d4-0048-11e8-94db-005056a205be"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'infiniteshopproject@gmail.com'
+EMAIL_HOST_PASSWORD = 'sjirdcfjxlnvwigv'

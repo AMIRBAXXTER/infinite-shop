@@ -135,8 +135,8 @@ function priceFilter() {
     const lowPriceVal = document.querySelector('.low-price-value')
     const highPriceVal = document.querySelector('.high-price-value')
     const form = document.querySelector('#price-filter')
-    lowPrice.value = lowPriceVal.innerHTML
-    highPrice.value = highPriceVal.innerHTML
+    lowPrice.value = lowPriceVal.innerHTML.replace(/,/g, '')
+    highPrice.value = highPriceVal.innerHTML.replace(/,/g, '')
     form.submit()
 
 }
