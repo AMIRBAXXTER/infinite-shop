@@ -125,7 +125,7 @@ class UserRegisterForm(forms.Form):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'phone', 'national_code', 'email', 'date_of_birth', 'card_number')
+        fields = ('first_name', 'last_name', 'phone', 'national_code', 'email', 'date_of_birth', 'card_number', 'profile_image')
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -136,6 +136,7 @@ class UserProfileForm(forms.ModelForm):
                 attrs={'type': 'date', 'placeholder': 'dd-mm-yyyy (DOB)', 'class': 'form-control'}
             ),
             'card_number': forms.TextInput(attrs={'class': 'form-control'}),
+
         }
 
     def clean_phone(self):
@@ -144,6 +145,8 @@ class UserProfileForm(forms.ModelForm):
 
     def clean_national_code(self):
         national_code = self.cleaned_data.get('national_code')
+        if national_code is None:
+            return ''
         if len(national_code) != 10:
             raise forms.ValidationError('کد ملی باید 10 رقم باشد.')
         if not national_code.isdigit():
@@ -170,6 +173,11 @@ class UserProfileForm(forms.ModelForm):
 
 
 class PasswordChangeForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(PasswordChangeForm, self).__init__(*args, **kwargs)
+
     old_password = forms.CharField(max_length=250, required=True,
                                    widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='رمز عبور قبل')
     new_password = forms.CharField(max_length=250, required=True,
@@ -177,6 +185,13 @@ class PasswordChangeForm(forms.Form):
     new_password2 = forms.CharField(max_length=250, required=True,
                                     widget=forms.PasswordInput(attrs={'class': 'form-control'}),
                                     label='تایید رمز عبور جدید')
+
+    def clean_old_password(self):
+        old_password = self.cleaned_data.get('old_password')
+        user = self.request.user
+        if not user.check_password(old_password):
+            raise forms.ValidationError('رمز عبور قبلی اشتباه است.')
+        return old_password
 
     def clean_new_password2(self):
         password1 = self.cleaned_data.get('new_password')

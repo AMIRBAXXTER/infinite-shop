@@ -65,7 +65,7 @@ def user_profile(request):
     if request.method == 'POST':
         form_name = request.POST.get('form_name')
         if form_name == 'profile_form':
-            profile_form = UserProfileForm(request.POST, instance=user)
+            profile_form = UserProfileForm(request.POST, request.FILES, instance=user)
             if profile_form.is_valid():
                 profile_form.save()
                 return redirect('UserApp:profile')
@@ -75,7 +75,7 @@ def user_profile(request):
                     'password_form': PasswordChangeForm(),
                 })
         if form_name == 'password_form':
-            password_form = PasswordChangeForm(request.POST)
+            password_form = PasswordChangeForm(request.POST, request=request)
             if password_form.is_valid():
                 cd = password_form.cleaned_data
                 old_password = cd['old_password']
@@ -84,12 +84,21 @@ def user_profile(request):
                     user.set_password(new_password)
                     user.save()
                     login(request, user)
+                    context.update({
+                        'profile_form': UserProfileForm(instance=user),
+                        'password_form': password_form,
+                    })
+                    return redirect('UserApp:profile')
+                else:
+                    context.update({
+                        'profile_form': UserProfileForm(instance=user),
+                        'password_form': password_form,
+                    })
             else:
                 context.update({
                     'profile_form': UserProfileForm(instance=user),
                     'password_form': password_form,
                 })
-                return redirect('UserApp:profile')
     else:
         context.update({
             'profile_form': UserProfileForm(instance=user),

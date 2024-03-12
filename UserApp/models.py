@@ -35,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_of_birth = models.DateField(null=True, blank=True, verbose_name='تاریخ تولد')
     email = models.EmailField(null=True, blank=True, verbose_name='ایمیل')
     card_number = models.CharField(max_length=16, null=True, blank=True, verbose_name='شماره کارت')
-    profile_image = models.ImageField(null=True, blank=True, verbose_name='تصویر پروفایل')
+    profile_image = models.ImageField(upload_to='profile_images', null=True, blank=True, verbose_name='تصویر پروفایل')
     is_active = models.BooleanField(default=True, verbose_name='فعال/غیرفعال')
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now, verbose_name='تاریخ ایجاد')
