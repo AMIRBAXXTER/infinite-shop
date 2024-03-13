@@ -8,17 +8,17 @@ from UserApp.models import User, Address
 
 class CartModel(models.Model):
     status = [
-        ('1', 'در انتظار پرداخت'),
-        ('2', ' پرداخت شده'),
-        ('3', ' ارسال شده'),
-        ('4', ' تکمیل شده'),
-        ('5', 'لغو شده'),
+        ('در انتظار پرداخت', 'در انتظار پرداخت'),
+        ('پرداخت شده', 'پرداخت شده'),
+        ('ارسال شده', 'ارسال شده'),
+        ('تکمیل شده', 'تکمیل شده'),
     ]
     cart_random_number = models.CharField(max_length=10, unique=True, blank=True, verbose_name='شماره سفارش')
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='کاربر')
     address = models.ForeignKey(Address, on_delete=models.CASCADE, verbose_name='آدرس', null=True, blank=True)
-    status = models.CharField(max_length=10, default='1', choices=status, verbose_name='وضعیت')
-    total_price = models.PositiveIntegerField(default=0, verbose_name='مبلغ')
+    status = models.CharField(max_length=25, default='در انتظار پرداخت', choices=status, verbose_name='وضعیت')
+    final_price = models.PositiveIntegerField(default=0, verbose_name='مبلغ')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ سفارش')
     payment_date = models.DateTimeField(null=True, blank=True, verbose_name='تاریخ پرداخت')
     delivery_date = models.DateTimeField(null=True, blank=True, verbose_name='تاریخ ارسال')
 

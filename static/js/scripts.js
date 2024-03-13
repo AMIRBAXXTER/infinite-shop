@@ -121,7 +121,7 @@ $(function() {
 
     /* Products Carousel */
     let owl = $('.products-carousel');
-    if(owl.length > 4) {
+    if(owl.length > 0) {
         owl.owlCarousel({
             rtl: true,
             autoplay: true,

@@ -34,13 +34,14 @@ class Cart:
             if user is not None:
                 if user.is_authenticated:
                     address_id = user.addresses.filter(is_active=True).first().id
-                    cart_model, created = CartModel.objects.get_or_create(user=user, status='1',
-                                                                          address_id=address_id)
+                    cart_model, created = CartModel.objects.get_or_create(user=user, address_id=address_id)
                     cart_item = CartItem.objects.create(cart=cart_model, product=product, color_id=product_color.id,
                                                         price=product.price, final_price=product.final_price,
                                                         color=product_color.color, color_stock=product_color.stock,
                                                         weight=product.weight, quantity=int(count))
                     cart_item.save()
+                    cart_model.final_price = self.get_payable_price()
+                    cart_model.save()
         else:
             self.cart[cart_key]['price'] = product.price
             self.cart[cart_key]['final_price'] = product.final_price
@@ -50,25 +51,29 @@ class Cart:
             self.save()
             if user is not None:
                 if user.is_authenticated:
-                    cart_model = CartModel.objects.filter(user=user, status='1').first()
+                    cart_model = CartModel.objects.filter(user=user, status='در انتظار پرداخت').first()
                     cart_item = CartItem.objects.get(cart=cart_model, product=product, color_id=product_color.id)
                     cart_item.price = product.price
                     cart_item.final_price = product.final_price
                     cart_item.weight = product.weight
                     cart_item.color_stock = product_color.stock
                     cart_item.save()
+                    cart_model.final_price = self.get_payable_price()
+                    cart_model.save()
 
     def new_user_add(self, product_id: int, product_color_id: int, count: int = 1, user: User = None):
         product: Product = Product.objects.get(id=product_id)
         product_color = ProductColor.objects.get(id=product_color_id, product=product)
 
-        cart_model, created = CartModel.objects.get_or_create(user=user, status='1')
+        cart_model, created = CartModel.objects.get_or_create(user=user, status='در انتظار پرداخت')
         if int(product_color.stock) >= int(count):
             cart_item = CartItem.objects.create(cart=cart_model, product=product, color_id=product_color.id,
                                                 price=product.price, final_price=product.final_price,
                                                 color=product_color.color, color_stock=product_color.stock,
                                                 weight=product.weight, quantity=int(count))
             cart_item.save()
+            cart_model.final_price = self.get_payable_price()
+            cart_model.save()
 
     def increase(self, product_id: int, product_color_id: int, user: User = None):
         product = Product.objects.get(id=product_id)
@@ -78,13 +83,14 @@ class Cart:
             self.save()
             if user is not None:
                 if user.is_authenticated:
-                    print('ok')
                     product = Product.objects.get(id=product_id)
                     product_color = ProductColor.objects.get(id=product_color_id, product=product)
-                    cart_model = CartModel.objects.filter(user=user, status='1').first()
+                    cart_model = CartModel.objects.filter(user=user, status='در انتظار پرداخت').first()
                     cart_item = CartItem.objects.get(cart=cart_model, product=product, color_id=product_color.id)
                     cart_item.quantity += 1
                     cart_item.save()
+                    cart_model.final_price = self.get_payable_price()
+                    cart_model.save()
 
     def decrease(self, product_id: int, product_color_id: int, user: User = None):
 
@@ -95,10 +101,12 @@ class Cart:
                 if user.is_authenticated:
                     product = Product.objects.get(id=product_id)
                     product_color = ProductColor.objects.get(id=product_color_id, product=product)
-                    cart_model = CartModel.objects.filter(user=user, status='1').first()
+                    cart_model = CartModel.objects.filter(user=user, status='در انتظار پرداخت').first()
                     cart_item = CartItem.objects.get(cart=cart_model, product=product, color_id=product_color.id)
                     cart_item.quantity -= 1
                     cart_item.save()
+                    cart_model.final_price = self.get_payable_price()
+                    cart_model.save()
 
     def remove(self, product_id: int, product_color_id: int, user: User = None):
         if self.cart[f'{product_id},{product_color_id}']:
@@ -108,16 +116,18 @@ class Cart:
             if user.is_authenticated:
                 product = Product.objects.get(id=product_id)
                 product_color = ProductColor.objects.get(id=product_color_id, product=product)
-                cart_model = CartModel.objects.filter(user=user, status='1').first()
+                cart_model = CartModel.objects.filter(user=user, status='در انتظار پرداخت').first()
                 cart_item = CartItem.objects.get(cart=cart_model, product=product, color_id=product_color.id)
                 cart_item.delete()
+                cart_model.final_price = self.get_payable_price()
+                cart_model.save()
 
     def clear(self, user: User = None):
         del self.session['cart']
         self.save()
         if user is not None:
             if user.is_authenticated:
-                cart_model = CartModel.objects.filter(user=user, status='1').first()
+                cart_model = CartModel.objects.filter(user=user, status='در انتظار پرداخت').first()
                 cart_model.delete()
 
     def get_post_price(self):

@@ -3,9 +3,37 @@
     <div class="container">
         <div class="row">
             <div class="col-6 col-sm-4 col-lg-2">
+                <div class="title">دسترسی کاربر</div>
+                <ul>
+                    {% if not request.user.is_authenticated %}
+                        <li><a href="{% url 'UserApp:login' %}">ورود</a></li>
+                        <li><a href="{% url 'UserApp:register' %}">ثبت نام</a></li>
+                    {% endif %}
+                    {% if request.user.is_authenticated %}
+                        <li><a href="{% url 'UserApp:profile' %}">پروفایل</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'UserApp:factors' %}">لیست سفارش ها</a></li>
+                    <li><a href="{% url 'UserApp:favorite_products' %}">محصولات مورد علاقه</a></li>
+                    <li><a href="{% url 'UserApp:addresses' %}">آدرس ها</a></li>
+                    {% if request.user.is_authenticated %}
+                        <li><a href="{% url 'UserApp:logout' %}">خروج</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-6 col-sm-4 col-lg-2">
+                <div class="title">دسته بندی محصولات</div>
+                <ul>
+                    {% for main_category in main_categories %}
+                        <li><a href="{% url 'ProductsApp:products_by_category' main_category.title %}">{{ main_category.title }}</a></li>
+                    {% endfor %}
+                    
+                </ul>
+            </div>
+            <div class="col-6 col-sm-4 col-lg-2">
                 <div class="title">دسترسی سریع</div>
                 <ul>
-                    <li><a href="blog.html">بلاگ آموزشی</a></li>
+                    <li ><a href="{% url 'CartApp:cart' %}">سبد خرید</a></li>
+                    <li><a href="{% url 'IndexApp:about_us' %}">درباره ما</a></li>
                 </ul>
             </div>
 
@@ -18,19 +46,6 @@
                         <div>7 روز هفته، 24 ساعت شبانه روز</div>
                         <div>پاسخگوی شما هستیم</div>
                         <div>{{ site_info.phone }}</div>
-                    </div>
-                    <div class="col-12 col-md-6 pt-2 pt-md-0" id="encode43vfbbbfb">
-                        <div class="row">
-                            <div class="col-4 text-center">
-                                <a href="#"><img src="assets/images/encode43vfbbbfb/enamad.html" alt=""></a>
-                            </div>
-                            <div class="col-4 text-center">
-                                <a href="#"><img src="assets/images/encode43vfbbbfb/samandehi.html" alt=""></a>
-                            </div>
-                            <div class="col-4 text-center">
-                                <a href="#"><img src="assets/images/encode43vfbbbfb/etehadiye.html" alt=""></a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

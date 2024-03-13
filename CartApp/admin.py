@@ -15,3 +15,10 @@ class CartModelAdmin(admin.ModelAdmin):
     list_display = ('cart_random_number', 'user', 'status')
     search_fields = ('user',)
     inlines = [CartItemInline]
+
+
+@admin.register(CartItem)
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ('cart', 'product', 'quantity', 'price')
+
+

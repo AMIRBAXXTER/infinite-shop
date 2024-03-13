@@ -10,6 +10,9 @@ class AddressInline(admin.StackedInline):
     model = Address
     extra = 0
 
+class CityInline(admin.StackedInline):
+    model = City
+    extra = 1
 
 @admin.register(User)
 class ShopUserAdmin(UserAdmin):
@@ -41,8 +44,9 @@ class ShopUserAdmin(UserAdmin):
 @admin.register(Province)
 class ProvinceAdmin(admin.ModelAdmin):
     list_display = ('name',)
+    inlines = [
+        CityInline,
+    ]
 
 
-@admin.register(City)
-class CityAdmin(admin.ModelAdmin):
-    list_display = ('name', 'province')
+

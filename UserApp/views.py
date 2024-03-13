@@ -121,6 +121,14 @@ def favorite_products(request):
     }
     return render(request, 'profile/favorites.html', context)
 
+@login_required
+def factors(request):
+    user_carts = CartModel.objects.filter(user=request.user).all().order_by('-created_at')
+    context = {
+        'user_carts': user_carts
+    }
+    return render(request, 'profile/factors.html', context)
+
 
 def addresses(request):
     form = AddressForm()
@@ -149,7 +157,7 @@ def form_partial(request):
 def get_city(request):
     province_id = request.GET.get('province_id')
     province = Province.objects.get(id=province_id)
-    cities = list(City.objects.filter(province=province).all().values_list('name', 'id'))
+    cities = list(City.objects.filter(province=province).all().order_by('name').values_list('name', 'id'))
     response = {
         'cities': cities
     }

@@ -18,6 +18,7 @@ urlpatterns = [
     path('profile/', views.user_profile, name='profile'),
     path('favorite-products/', views.favorite_products, name='favorite_products'),
     path('addresses/', views.addresses, name='addresses'),
+    path('factors/', views.factors, name='factors'),
     path('get-city/', views.get_city, name='get_city'),
     path('add-address/', views.add_address, name='add_address'),
     path('delete-address/', views.delete_address, name='delete_address'),

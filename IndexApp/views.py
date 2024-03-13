@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 from IndexApp.forms import SearchForm
 from IndexApp.models import *
-from ProductsApp.models import Product
+from ProductsApp.models import Product, Category
 
 
 # Create your views here.
@@ -48,8 +48,10 @@ def header(request):
 
 def footer(request):
     site_info: SiteInfo = SiteInfo.objects.filter(is_active=True).first()
+    main_categories = Category.objects.filter().all().order_by('?')[:8]
     context = {
-        'site_info': site_info
+        'site_info': site_info,
+        'main_categories': main_categories
     }
     return render(request, 'infinite shop/partial/footer.html', context)
 

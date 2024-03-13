@@ -173,7 +173,8 @@
                                         <div class="col-3 col-sm-4 col-lg-3">
                                             <div class="variable">
                                                 <div class="sub-title pt-2 pb-2">تعداد</div>
-                                                <input oninput="enforceMinMax(this)" id="product-count" type="number" min="1"
+                                                <input oninput="enforceMinMax(this)" id="product-count" type="number"
+                                                       min="1"
                                                        max="{{ product_color.stock }}" class="form-control" value="1">
                                             </div>
                                         </div>
@@ -198,10 +199,10 @@
                                             <br class="d-sm-none">
                                             {% if request.user.is_authenticated %}
                                                 <a id="like" onclick="addProductToFavorite({{ product.id }})"
-                                               class="btn bi bi-heart{% if user_favorited %}-fill{% endif %}  mt-1 mt-sm-0"
-                                               style="color: red"
-                                               data-toggle="tooltip" data-placement="top"
-                                               title="افزودن به علاقه‌مندی"></a>
+                                                   class="btn bi bi-heart{% if user_favorited %}-fill{% endif %}  mt-1 mt-sm-0"
+                                                   style="color: red"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="افزودن به علاقه‌مندی"></a>
 
                                             {% endif %}
 
@@ -448,6 +449,8 @@
                                         </div>
                                         <!-- /Product Box -->
                                     </div>
+                                {% empty %}
+                                    <p class="alert alert-warning">محصول مرتبطی موجود نیست.</p>
                                 {% endfor %}
 
 

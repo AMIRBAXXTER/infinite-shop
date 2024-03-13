@@ -1,0 +1,97 @@
+{% extends 'profile/parent/profile-parent.html' %}
+{% load product_tags %}
+{% load humanize %}
+{% load render_partial %}
+{% load static %}
+{% load thumbnail %}
+{% block title %}
+    پروفایل
+{% endblock %}
+{% block header %}
+
+{% endblock %}
+{% block profile_content %}
+    <div class="col-12 col-lg-9 pl-lg-0 pr-lg-2 mt-2 mt-lg-0">
+        {% for cart in user_carts %}
+            <div class="custom-container mt-2 order">
+                <div class="row pt-2 px-3">
+                    <div class="col-12 col-sm-6"><h2 class="text-decoration-underline">سفارش شماره
+                        #{{ cart.cart_random_number }}</h2></div>
+                    <div class="col-12 col-sm-6 text-sm-end"><span>{{ cart.created_at }}</span> - <span
+                            class="text-danger">{{ cart.status.title }}</span></div>
+                </div>
+                <hr>
+                <div class="container">
+                    <div class="row py-2">
+                        <div class="col-12">
+                            <div>
+                                <div class="header">
+                                    <div class="total py-1"><span>مبلغ کل:</span> {{ cart.final_price|intcomma:False }}
+                                        تومان
+                                    </div>
+                                </div>
+                                <div class="container products px-0">
+                                    <div class="row">
+                                        {% for item in cart.items.all %}
+                                            <span class="col-12 col-sm-6 col-lg-4 col-xl-3 px-1">
+                                                            <a href="{{ item.product.get_absolute_url }}"
+                                                               target="_blank">
+                                                                <div class="encode4326654321vfb">
+                                                                    <div class="image"
+                                                                         style="background-image: url({{ item.product|product_main_image }})"></div>
+                                                                    <div class="text-center px-1 px-sm-3">
+                                                                        <h2>{{ item.product.title }}<span
+                                                                                class="btn border border-3 rounded-circle"
+                                                                                style="background-color: {{ item.color }}"></span></h2>
+                                                                        <div class="number">تعداد: {{ item.quantity }} عدد</div>
+                                                                        <div class="encode4365gbf265g43d">مبلغ: {{ item.final_price|intcomma:False }} عدد</div>
+                                                                    </div>
+                                                                </div>
+                                                            </a>
+                                                        </span>
+                                        {% empty %}
+                                            <div class="col-12">
+                                                <div class="alert alert-warning">
+                                                    <h4>
+                                                        سفارش شما هنوز هیچ کالایی ندارد.
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+
+                                        <!-- Order Record -->
+
+                                        <!-- /Order Record -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-warning">
+                            <h4>
+                                شما هنوز سفارشی ندارید
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+
+    </div>
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}
+{% block script %}
+    <script>
+        tabStyle()
+        selectBoxOptions()
+    </script>
+{% endblock %}

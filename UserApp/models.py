@@ -54,6 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Province(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True, verbose_name='نام')
+    slug = models.SlugField(max_length=200, null=True, blank=True, verbose_name='نام انگلیسی')
 
     def __str__(self):
         return self.name
@@ -61,10 +62,12 @@ class Province(models.Model):
     class Meta:
         verbose_name = 'استان'
         verbose_name_plural = 'استان ها'
+        db_table = 'provinces'
 
 
 class City(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True, verbose_name='نام')
+    slug = models.SlugField(max_length=200, null=True, blank=True, verbose_name='نام انگلیسی')
     province = models.ForeignKey(Province, related_name='cities', on_delete=models.CASCADE, null=True, blank=True,
                                  verbose_name='استان')
 
@@ -74,6 +77,7 @@ class City(models.Model):
     class Meta:
         verbose_name = 'شهر'
         verbose_name_plural = 'شهر ها'
+        db_table = 'cities'
 
 
 class Address(models.Model):

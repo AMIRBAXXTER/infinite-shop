@@ -20,9 +20,8 @@
                                 <p>به بخش پروفایل اینفینیت شاپ خوش آمدید.</p>
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="../index.html">صفحه نخست</a></li>
-                                        <li class="breadcrumb-item"><a href="#">پروفایل</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">ویرایش پروفایل</li>
+                                        <li class="breadcrumb-item"><a href="{% url 'IndexApp:index' %}">صفحه نخست</a></li>
+                                        <li class="breadcrumb-item">پروفایل</li>
                                     </ol>
                                 </nav>
                             </div>
@@ -76,7 +75,7 @@
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="factors.html" class="profile-tab">
+                                                        <a href="{% url 'UserApp:factors' %}" class="profile-tab">
                                                             <div>
                                                                 <div class="icon d-inline-block"><img
                                                                         src="{% static 'images/icons/profile-menu/orders.webp' %}"
