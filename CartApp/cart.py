@@ -2,7 +2,7 @@ from django.http import HttpRequest, Http404
 
 from CartApp.models import CartModel, CartItem
 from ProductsApp.models import Product, ProductColor
-from UserApp.models import User
+from UserApp.models import User, Address
 
 
 class Cart:
@@ -33,8 +33,12 @@ class Cart:
                 self.save()
             if user is not None:
                 if user.is_authenticated:
-                    address_id = user.addresses.filter(is_active=True).first().id
-                    cart_model, created = CartModel.objects.get_or_create(user=user, address_id=address_id)
+                    address = user.addresses.filter(is_active=True).first()
+                    cart_model, created = CartModel.objects.get_or_create(user=user, status='در انتظار پرداخت')
+                    if address is not None:
+                        cart_model.address_id = address.id
+                        cart_model.save()
+
                     cart_item = CartItem.objects.create(cart=cart_model, product=product, color_id=product_color.id,
                                                         price=product.price, final_price=product.final_price,
                                                         color=product_color.color, color_stock=product_color.stock,

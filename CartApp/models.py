@@ -15,7 +15,7 @@ class CartModel(models.Model):
     ]
     cart_random_number = models.CharField(max_length=10, unique=True, blank=True, verbose_name='شماره سفارش')
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='کاربر')
-    address = models.ForeignKey(Address, on_delete=models.CASCADE, verbose_name='آدرس', null=True, blank=True)
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, verbose_name='آدرس', null=True, blank=True)
     status = models.CharField(max_length=25, default='در انتظار پرداخت', choices=status, verbose_name='وضعیت')
     final_price = models.PositiveIntegerField(default=0, verbose_name='مبلغ')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ سفارش')

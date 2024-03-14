@@ -190,7 +190,7 @@ def add_address(request):
                 'form': form
             }
             return render(request, 'partials/address-form.html', context)
-    user_addresses = request.user.addresses.all()
+    user_addresses = request.user.addresses.all().order_by('-created_at')
     context = {
         'user_addresses': user_addresses
     }
@@ -201,7 +201,7 @@ def delete_address(request):
     address_id = request.GET.get('address_id')
     address = Address.objects.get(id=address_id)
     address.delete()
-    user_addresses = request.user.addresses.all()
+    user_addresses = request.user.addresses.all().order_by('-created_at')
     context = {
         'user_addresses': user_addresses
     }
@@ -213,7 +213,7 @@ def activate_address(request):
     address = Address.objects.get(id=address_id)
     address.is_active = True
     address.save()
-    user_addresses = request.user.addresses.all()
+    user_addresses = request.user.addresses.all().order_by('-created_at')
     context = {
         'user_addresses': user_addresses
     }

@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 from CartApp.cart import Cart
+from CartApp.models import CartModel
 
 
 # Create your views here.
@@ -174,7 +175,12 @@ def verify(request):
     if response.status_code == 200:
         response_data = response.json()
         if response_data['Status'] == 100:
-            return redirect('UserApp:profile')
+            cart_model = CartModel.objects.filter(user=request.user, status='در انتظار پرداخت').first()
+            cart_model.status = 'پرداخت شده'
+            cart_model.save()
+            cart = Cart(request)
+            cart.clear(request.user)
+            return render(request, 'cart_app/cart.html', {'cart': cart})
         else:
-            return redirect('IndexApp:index')
+            return JsonResponse({'status': False, 'code': str(response_data['Status'])})
     return redirect('CartApp:cart')

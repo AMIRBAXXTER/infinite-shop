@@ -19,7 +19,8 @@
                                 <p>با پرداخت فاکتور، خرید خود را تکمیل کنید.</p>
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="{% url 'IndexApp:index' %}">صفحه نخست</a></li>
+                                        <li class="breadcrumb-item"><a href="{% url 'IndexApp:index' %}">صفحه نخست</a>
+                                        </li>
                                         <li class="breadcrumb-item active" aria-current="page">پیش فاکتور</li>
                                     </ol>
                                 </nav>
@@ -45,25 +46,43 @@
                                                 <div class="row">
                                                     <div class="col-12 col-md-9 pl-0" id="address-detail">
                                                         <div class="p-3 ml-3 mb-2 mb-md-0 ml-md-0 address-to-send">
-                                                            <div class="address-title">
-                                                                <span id="province-title">{{ active_address.province  }}</span>،
-                                                                <span id="city-title">{{ active_address.city }}</span>،
-                                                                <span id="address">{{ active_address.address }}</span>،
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-12 col-md-4">کدپستی: {{ active_address.postal_code }}</div>
-                                                                <div class="col-12 col-md-8">تحویل گیرنده: {{ active_address.receiver_name }}</div>
-                                                            </div>
+                                                            {% if active_address %}
+                                                                <div class="address-title">
+                                                                    <span id="province-title">{{ active_address.province }}</span>،
+                                                                    <span id="city-title">{{ active_address.city }}</span>،
+                                                                    <span id="address">{{ active_address.address }}</span>،
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-12 col-md-4">
+                                                                        کدپستی: {{ active_address.postal_code }}</div>
+                                                                    <div class="col-12 col-md-8">تحویل
+                                                                        گیرنده: {{ active_address.receiver_name }}</div>
+                                                                </div>
+                                                            {% else %}
+                                                                لطفا آدرس خود را انتخاب کنید.
+                                                            {% endif %}
+
                                                         </div>
                                                     </div>
                                                     <div class="col-12 col-md-3">
                                                         <div class="row">
                                                             <div class="col-6 col-md-12 pr-2 px-md-3">
-                                                                <a target="_blank" href="{% url 'UserApp:addresses' %}">
-                                                                    <div class="btn btn-outline-dark mt-0 mt-md-1 w-100">
-                                                                        تغییر آدرس
-                                                                    </div>
-                                                                </a>
+                                                                {% if active_address %}
+                                                                    <a target="_blank"
+                                                                       href="{% url 'UserApp:addresses' %}">
+                                                                        <div class="btn btn-outline-dark mt-0 mt-md-1 w-100">
+                                                                            تغییر آدرس
+                                                                        </div>
+                                                                    </a>
+                                                                {% else %}
+                                                                    <a target="_blank"
+                                                                       href="{% url 'UserApp:addresses' %}">
+                                                                        <div class="btn btn-outline-dark mt-0 mt-md-1 w-100">
+                                                                            اضافه کردن آدرس
+                                                                        </div>
+                                                                    </a>
+                                                                {% endif %}
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -82,19 +101,26 @@
                                                 <div class="pb-1 title">سفارشات شما</div>
                                                 <div class="row">
                                                     {% for item in cart %}
-                                                    	<span class="col-6 col-sm-4 col-lg-3 px-0">
+                                                        <span class="col-6 col-sm-4 col-lg-3 px-0">
                                                     <a href="{{ item.product.get_absolute_url }}" target="_blank">
                                                         <div class="encode4326654321vfb">
                                                             <div class="image"
                                                                  style="background-image: url({{ item.product|product_main_image }})"></div>
                                                             <div class="text-center px-1 px-sm-3">
-                                                                <a href="{{ item.product.get_absolute_url }}" target="_blank"><h2>گوشی موبایل سامسونگ مدل Galaxy A51 دو سیم کارت</h2></a>
+                                                                <a href="{{ item.product.get_absolute_url }}"
+                                                                   target="_blank"><h2>گوشی موبایل سامسونگ مدل Galaxy A51 دو سیم کارت</h2></a>
                                                                 <div class="number">تعداد: {{ item.quantity }} عدد</div>
                                                             </div>
                                                         </div>
                                                     </a>
                                                 </span>
                                                     {% empty %}
+                                                        <div class="col-12">
+                                                            <div class="alert alert-warning" role="alert">
+                                                                سفارش شما خالی است.
+                                                            </div>
+                                                        </div>
+
 
                                                     {% endfor %}
 
@@ -121,11 +147,17 @@
                                     <hr>
                                     <div class="container">
 
-                                            <div class="col-12 mb-3">
+                                        <div class="col-12 mb-3">
+                                            {% if active_address and cart.count > 0 %}
+                                            	<a href="{% url 'CartApp:request' %}" class="btn btn-success w-100">پرداخت و
+                                                تکمیل خرید</a>
+                                            {% else %}
+                                            	<a href="{% url 'CartApp:request' %}" class="btn btn-success w-100 disabled">پرداخت و
+                                                تکمیل خرید</a>
+                                            {% endif %}
 
-                                                <a href="{% url 'CartApp:request' %}" class="btn btn-success w-100">پرداخت و تکمیل خرید</a>
 
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -134,6 +166,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </section>
 {% endblock %}
