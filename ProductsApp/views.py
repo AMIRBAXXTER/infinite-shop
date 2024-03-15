@@ -24,6 +24,7 @@ def product_detail(request: HttpRequest, product_id):
         user_favorited = False
     blank_star = 5 - avg
     main_category = product.category.filter(parent=None).first()
+    product_images = product.product_images.all().order_by('-is_main')
     product_comments = ProductComment.objects.filter(product=product, parent=None).order_by('-created_at')
     product_all_comments = ProductComment.objects.filter(product=product)
     product_color = ProductColor.objects.filter(product=product).first()
@@ -41,6 +42,7 @@ def product_detail(request: HttpRequest, product_id):
         'star_range': range(1, (avg + 1)),
         'blank_star': range(1, (blank_star + 1)),
         'main_category': main_category,
+        'product_images': product_images,
         'product_comments': product_comments,
         'product_all_comments': product_all_comments,
         'product_color': product_color,

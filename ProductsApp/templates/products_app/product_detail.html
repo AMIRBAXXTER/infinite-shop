@@ -49,7 +49,7 @@
                                     <!-- Additional required wrapper -->
                                     <ul class="swiper-wrapper">
                                         <!-- Slides -->
-                                        {% for img in product.product_images.all %}
+                                        {% for img in product_images %}
                                             <li id="1" class="swiper-slide">
                                                 <a href="{{ img.file.url }}" itemprop="contentUrl"
                                                    data-size="900x710">
@@ -71,7 +71,7 @@
                                 <!-- Swiper -->
                                 <div class="swiper-container gallery-thumbs">
                                     <div class="swiper-wrapper">
-                                        {% for img in product.product_images.all %}
+                                        {% for img in product_images %}
                                             <div class="swiper-slide"
                                                  style="background-image:url('{{ img.image.url }}')"></div>
                                         {% endfor %}
@@ -143,11 +143,14 @@
                                 {% endif %}
 
                                 <p>{{ product.long_description|linebreaks }}</p>
-                                <div>
-                                    <span>برند :</span>
-                                    <span>{{ product.brand.title }}</span>
-                                    <img src="{{ product.brand.brand_image.url }}" alt="{{ product.brand.title }}">
-                                </div>
+                                {% if product.brand %}
+                                    <div>
+                                        <span>برند :</span>
+                                        <span>{{ product.brand.title }}</span>
+                                        <img src="{{ product.brand.brand_image.url }}" alt="{{ product.brand.title }}">
+                                    </div>
+                                {% endif %}
+
 
                                 <hr>
                                 <div class="variables">
@@ -157,10 +160,10 @@
                                             <div class="variable">
                                                 <div class="sub-title pt-2 pb-3">رنگ</div>
                                                 {% for color in product.product_color.all %}
-                                                    <span class="color-variable rounded-circle border-2{% if forloop.counter == 1 %} border-danger {% endif %}"
+                                                    <span class="color-variable rounded-circle border-2"
                                                           data-color="{{ color.color }}"><a
                                                             class="rounded-circle"
-                                                            onclick="colorStock({{ product.id }})"
+                                                            onclick="debouncedColorStock({{ product.id }})"
                                                             title="{{ color.title }}"
                                                             style="background-color: {{ color.color }}"></a></span>
                                                     {% if forloop.counter|divisibleby:4 %}
@@ -449,11 +452,7 @@
                                         </div>
                                         <!-- /Product Box -->
                                     </div>
-                                {% empty %}
-                                    <p class="alert alert-warning">محصول مرتبطی موجود نیست.</p>
                                 {% endfor %}
-
-
                                 <!-- /Product Item -->
 
                             </div>
