@@ -18,6 +18,10 @@ class SiteInfo(models.Model):
                                          quality=100,
                                          verbose_name='تصویر درباره ما')
 
+    class Meta:
+        verbose_name = 'اطلاعات سایت'
+        verbose_name_plural = 'اطلاعات سایت'
+
 
     def __str__(self):
         return self.title

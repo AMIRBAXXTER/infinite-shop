@@ -37,6 +37,13 @@
                           onclick="setParentId({{ comment.id }})"><img
                             src="{% static 'images/comment-reply.png' %}"
                             alt=""> ارسال پاسخ</span>
+                    {% if request.user == comment.user %}
+
+                        <span class="reply send-reply ms-5"
+                              onclick="deleteComment({{ comment.id }})"><span
+                                class="text-danger">X</span>حذف</span>
+
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -72,6 +79,13 @@
                                 <div class="col-12">
                                     <p>{{ reply.comment }}</p>
                                 </div>
+                                {% if request.user == reply.user %}
+
+                                    <span class="reply send-reply ms-5"
+                                          onclick="deleteComment({{ comment.id }})"><span
+                                            class="text-danger">X</span>حذف</span>
+
+                                {% endif %}
                             </div>
                         </div>
                     </div>

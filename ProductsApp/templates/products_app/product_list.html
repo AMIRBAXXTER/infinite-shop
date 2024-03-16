@@ -236,14 +236,22 @@
                                                             <a href="{% url 'ProductsApp:product_detail' product.id %}">
                                                                 <h2>{{ product.title }}</h2></a>
                                                             {% if not product.is_active %}
-                                                                <span>ناموجود</span>
+                                    <span class="pre-encode4365gbf265g43d text-decoration-line-through"></span>
+                                    <span class="bg-danger m-auto d-inline-block px-1 rounded-2 text-light"></span>
+                                    <div class="fs-4 text-danger encode4365gbf265g43d">ناموجود<span
+                                            class="fs-6"></span></div>
+                                {% elif product.off_percent == 0 %}
+                                    <span class="pre-encode4365gbf265g43d text-decoration-line-through"></span>
+                                    <span class="bg-danger m-auto d-inline-block px-1 rounded-2 text-light"></span>
+                                    <div class="fs-4 encode4365gbf265g43d">{{ product.final_price|intcomma:False }}<span
+                                            class="fs-6">  تومان</span></div>
 
-                                                            {% else %}
-                                                                <span class="pre-encode4365gbf265g43d text-decoration-line-through">{{ product.price|intcomma:False }}</span>
-                                                                <span class="bg-danger m-auto d-inline-block px-1 rounded-2 text-light">{{ product.off_percent }}%</span>
-                                                                <div class="fs-4 encode4365gbf265g43d">{{ product.final_price|intcomma:False }}<span
-                                                                        class="fs-6">  تومان</span></div>
-                                                            {% endif %}
+                                {% else %}
+                                    <span class="pre-encode4365gbf265g43d text-decoration-line-through">{{ product.price|intcomma:False }}</span>
+                                    <span class="bg-danger m-auto d-inline-block px-1 rounded-2 text-light">{{ product.off_percent }}%</span>
+                                    <div class="fs-4 encode4365gbf265g43d">{{ product.final_price|intcomma:False }}<span
+                                            class="fs-6">  تومان</span></div>
+                                {% endif %}
 
                                                             <div class="rate">
                                                                 <span class="encode43bf265g43d">({{ product.comment.count }} نظر)</span>

@@ -11,6 +11,7 @@ urlpatterns = [
     path('product-list/brand/<str:brand>/', views.ProductListView.as_view(), name='products_by_brand'),
     path('product-color-stock/', views.color_stock, name='product_color_stock'),
     path('add-comment/', views.product_comment, name='product_comment'),
+    path('delete-comment/', views.delete_comment, name='delete_comment'),
     path('add-favorite/', views.add_product_to_favorite, name='add_product_to_favorite'),
-
+    path('add-rate/', views.add_rate, name='add_rate'),
 ]

@@ -45,6 +45,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = []
 
+    class Meta:
+        verbose_name = 'کاربر'
+        verbose_name_plural = 'کاربران'
+
     def full_name(self):
         return f'{self.first_name} {self.last_name}' if self.first_name != '' and self.last_name != '' else self.phone
 

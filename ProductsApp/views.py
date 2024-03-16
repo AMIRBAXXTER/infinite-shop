@@ -29,6 +29,7 @@ def product_detail(request: HttpRequest, product_id):
     product_all_comments = ProductComment.objects.filter(product=product)
     product_color = ProductColor.objects.filter(product=product).first()
     product_properties = ProductProperty.objects.filter(product=product)
+    user_rate = ProductRate.objects.filter(product=product, user=user).first()
     related_products = Product.objects.filter(category__in=product.category.all()).order_by('-created_at').exclude(
         id=product.id).distinct()
 
@@ -47,6 +48,7 @@ def product_detail(request: HttpRequest, product_id):
         'product_all_comments': product_all_comments,
         'product_color': product_color,
         'product_properties': product_properties,
+        'user_rate': user_rate,
         'related_products': related_products,
         'user_favorited': user_favorited,
 
@@ -73,7 +75,7 @@ class ProductListView(ListView):
         return context
 
     def get_queryset(self):
-        query = super(ProductListView, self).get_queryset().order_by('-is_active')
+        query = super(ProductListView, self).get_queryset().order_by('?')
         order_by = self.request.GET.get('order-by')
         low_price = self.request.GET.get('low-price')
         high_price = self.request.GET.get('high-price')
@@ -138,6 +140,24 @@ def product_comment(request: HttpRequest):
     }
     return render(request, 'partials/comments_partial.html', context)
 
+
+@login_required
+def delete_comment(request: HttpRequest):
+    comment_id = request.GET.get('comment_id')
+    comment = ProductComment.objects.filter(id=comment_id).first()
+    if not comment:
+        return JsonResponse({'deleted': False})
+    comment.delete()
+    comments = ProductComment.objects.filter(product=comment.product, parent=None).order_by('-created_at')
+    product_all_comments = ProductComment.objects.filter(product=comment.product)
+
+    context = {
+        'product_comments': comments,
+        'product_all_comments': product_all_comments
+    }
+    return render(request, 'partials/comments_partial.html', context)
+
+
 @login_required
 def add_product_to_favorite(request):
     product_id = request.GET.get('product_id')
@@ -150,4 +170,22 @@ def add_product_to_favorite(request):
     else:
         product.favorites.filter(user=user).delete()
         return JsonResponse({'liked': False})
+
+
+def add_rate(request):
+    product_id = request.GET.get('product_id')
+    product: Product = Product.objects.filter(id=product_id).first()
+    user = request.user
+    rate = int(request.GET.get('rate'))
+    if not ProductRate.objects.filter(product=product, user=user).exists():
+        product_rate = ProductRate(product=product, user=user, rate=rate)
+        product_rate.save()
+        return JsonResponse({'status': True})
+
+    else:
+        product_rate = ProductRate.objects.filter(product=product, user=user).first()
+        product_rate.rate = rate
+        product_rate.save()
+        return JsonResponse({'status': True})
+
 

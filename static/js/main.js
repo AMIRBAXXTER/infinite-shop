@@ -96,11 +96,49 @@ function addComment(product_id) {
                 } else {
                     document.querySelector('#comment-box' + parentId.value).scrollIntoView({behavior: 'smooth'})
                 }
-                setModal('نظر شما با موفقیت ثبت شد.', 'success')
+                parentId.value = ''
+                $('#comment-submit').blur()
+                setTimeout(function () {
+                    setModal('نظر شما با موفقیت ثبت شد.', 'success')
+                }, 1000)
             },
         })
     }
 
+
+}
+
+function deleteComment(id) {
+    event.preventDefault()
+    Swal.fire({
+        title: "آیا از حذف نظر اطمینان دارید؟",
+        showDenyButton: true,
+        confirmButtonText: "بله",
+        denyButtonText: `خیر`
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/delete-comment/',
+                method: 'GET',
+                data: {
+                    comment_id: id,
+                },
+                success: function (res) {
+                    if (res === 'deleted') {
+                        setModal('متاسفانه خطایی پیش آمده', 'error')
+                    }
+                    $('#comments-cont').html(res)
+                    document.querySelector('#comment-start').scrollIntoView({behavior: 'smooth'})
+                    setTimeout(function () {
+                        setModal('نظر با موفقیت حذف شد.', 'success')
+                    }, 1000)
+
+                },
+            })
+        } else if (result.isDenied) {
+            setModal('عملیات لغو شد.', 'info')
+        }
+    });
 
 }
 
@@ -521,5 +559,50 @@ function enforceMinMax(el) {
 
 function separateNumbers(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function selectAllPrevious(element) {
+    let result = []
+    result.push(element)
+    while (element = element.previousElementSibling) {
+        result.push(element)
+    }
+    return result
+}
+
+function starRate(rate) {
+    document.getElementById('star-rating-input').value = rate
+    let stars = document.querySelectorAll('.star')
+    stars.forEach(function (element) {
+        element.style.color = 'rgba(255, 218, 0, 0.42)'
+    })
+    let target = stars[rate - 1]
+    let elements = selectAllPrevious(target)
+    elements.forEach(function (element) {
+        element.style.color = 'gold'
+    })
+}
+
+function addRate(product_id) {
+    event.preventDefault()
+    let rate = document.querySelector('#star-rating-input')
+    if (rate.value !== '') {
+        $.ajax({
+            url: '/add-rate/',
+            method: 'GET',
+            data: {
+                product_id: product_id,
+                rate: rate.value,
+            },
+            success: function (res) {
+                if (res.status) {
+                    setModal('امتیاز شما با موفقیت ثبت شد.', 'success')
+                } else {
+                    setModal('متاسفانه خطایی رخ داد. دوباره امتحان کنید.', 'danger')
+                }
+
+            },
+        })
+    }
 }
 

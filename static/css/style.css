@@ -2403,6 +2403,26 @@ ul.errorlist {
 }
 
 .black-border {
-  -webkit-text-stroke: thin rgba(0, 0, 0, 0.4);
-  font-size: 20px;
+    -webkit-text-stroke: thin rgba(0, 0, 0, 0.4);
+    font-size: 20px;
+}
+
+.star-rating {
+    direction: rtl;
+}
+
+.stars-cont>.star {
+    cursor: pointer;
+    font-size: 30px;
+    color: rgba(255, 218, 0, 0.42);
+}
+.stars-cont:hover .star {
+    color: gold;
+}
+.stars-cont .star:hover ~ .star {
+    color: rgba(255, 218, 0, 0.42);
+}
+
+.star-rating input {
+    display: none;
 }

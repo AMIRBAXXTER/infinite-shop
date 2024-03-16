@@ -22,6 +22,11 @@ class CartModel(models.Model):
     payment_date = models.DateTimeField(null=True, blank=True, verbose_name='تاریخ پرداخت')
     delivery_date = models.DateTimeField(null=True, blank=True, verbose_name='تاریخ ارسال')
 
+
+    class Meta:
+        verbose_name = 'سفارش'
+        verbose_name_plural = 'سفارشات'
+
     def __str__(self):
         return f'Cart {self.id}'
 
@@ -42,6 +47,11 @@ class CartItem(models.Model):
     color_stock = models.IntegerField(verbose_name='موجودی رنگ')
     weight = models.IntegerField(verbose_name='وزن')
     quantity = models.IntegerField(default=1, verbose_name='تعداد')
+
+
+    class Meta:
+        verbose_name = 'آیتم سفارش'
+        verbose_name_plural = 'آیتم های سفارش'
 
     def __str__(self):
         return f'Cart {self.cart.id} Item {self.id}'

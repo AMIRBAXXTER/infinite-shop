@@ -16,7 +16,8 @@ def index(request):
     side_pictures = SidePicture.objects.filter(site_info=site_info).all()
     featured_products = Product.objects.filter(is_active=True).order_by('-average_rate')[:4]
     off_products = Product.objects.filter(is_active=True).order_by('-off_percent')[:4]
-    most_viewed_products = Product.objects.annotate(num_visits=Count('product_visited')).order_by('-num_visits')[:4]
+    most_viewed_products = Product.objects.filter(is_active=True).annotate(
+        num_visits=Count('product_visited')).order_by('-num_visits')[:4]
     context = {
         'main_pictures': main_pictures,
         'side_pictures': side_pictures,
@@ -59,10 +60,19 @@ def footer(request):
 def search(request):
     if request.method == 'POST':
         query = request.POST.get('query')
-        result1 = Product.objects.annotate(similarity=TrigramSimilarity('title', query)).filter(similarity__gt=0.1)
-        result2 = Product.objects.annotate(similarity=TrigramSimilarity('short_description', query)).filter(
-            similarity__gt=0.01)
-        products = (result1 | result2).order_by('-similarity')
+        # result1 = Product.objects.annotate(similarity=TrigramSimilarity('title', query)).filter(similarity__gt=0.1)
+        # result2 = Product.objects.annotate(similarity=TrigramSimilarity('short_description', query)).filter(
+        #     similarity__gt=0.01)
+        # products = (result1 | result2).order_by('-similarity')
+
+        # search structure changed, because server cant install trigram extension.
+        result1 = Product.objects.filter(title__icontains=query).order_by('sale_count')
+        result2 = Product.objects.filter(short_description__icontains=query).order_by('sale_count')
+        result3 = Product.objects.filter(long_description__icontains=query).order_by('sale_count')
+        result4 = Product.objects.filter(brand__title__icontains=query).order_by('sale_count')
+        result5 = Product.objects.filter(category__title__icontains=query).order_by('sale_count')
+        result6 = Product.objects.filter(category__parent__title__icontains=query).order_by('sale_count')
+        products = (result1 | result2 | result3 | result4 | result5 | result6).distinct().order_by('sale_count')
         context = {
             'products': products,
             'query': query

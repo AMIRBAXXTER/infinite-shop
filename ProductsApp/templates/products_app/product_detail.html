@@ -230,6 +230,9 @@
                                                 <button class="tab-item tablink px-3"
                                                         onclick="openTab(event,'comments-tab')">نظر کاربران
                                                 </button>
+                                                <button class="tab-item tablink px-3"
+                                                        onclick="openTab(event,'rate-tab')">امتیاز بدهید
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -242,27 +245,25 @@
                                                     <p>{{ product.main_description|linebreaks }}</p>
                                                 </div>
                                                 <!-- /HTML Tab -->
-
                                                 <!-- Details Tab -->
                                                 <div id="details-tab" class="tabs-container px-0 px-md-3 pb-0 pb-md-3"
                                                      style="display:none">
                                                     <div class="row mb-2">
                                                         {% for property in product_properties %}
-                                                            <div class="col-12 col-md-3 font-weight-bold">
-                                                                <div class="bg-light p-2">{{ property.title }}</div>
+                                                            <div class="col-6 col-md-3 font-weight-bold">
+                                                                <div class="bg-light p-2">{{ property.title }}:</div>
                                                             </div>
-                                                            <div class="col-12 col-md-9 pr-md-0">
+                                                            <div class="col-6 col-md-9 pr-md-0">
                                                                 <div class="bg-light p-2">{{ property.value }}</div>
                                                             </div>
                                                         {% empty %}
-
+                                                            <p>مشخصات موجود نیست.</p>
                                                         {% endfor %}
 
 
                                                     </div>
                                                 </div>
                                                 <!-- /Details Tab -->
-
                                                 <!-- Comments Tab -->
                                                 <div id="comments-tab" class="tabs-container px-0 px-md-3 pb-0 pb-md-2"
                                                      style="display:none">
@@ -310,6 +311,13 @@
                                                                                                       onclick="setParentId({{ comment.id }})"><img
                                                                                                         src="{% static 'images/comment-reply.png' %}"
                                                                                                         alt=""> ارسال پاسخ</span>
+                                                                                                {% if request.user == comment.user %}
+
+                                                                                                    <span class="reply send-reply ms-5"
+                                                                                                          onclick="deleteComment({{ comment.id }})"><span
+                                                                                                            class="text-danger">X</span>حذف</span>
+
+                                                                                                {% endif %}
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -345,6 +353,13 @@
                                                                                                             <div class="col-12">
                                                                                                                 <p>{{ reply.comment }}</p>
                                                                                                             </div>
+                                                                                                            {% if request.user == reply.user %}
+
+                                                                                                                <span class="reply send-reply ms-5"
+                                                                                                                      onclick="deleteComment({{ comment.id }})"><span
+                                                                                                                        class="text-danger">X</span>حذف</span>
+
+                                                                                                            {% endif %}
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
@@ -409,6 +424,36 @@
                                                     </div>
                                                 </div>
                                                 <!-- /Comments Tab -->
+                                                <!-- /Rate Tab -->
+                                                <div id="rate-tab" class="tabs-container px-0 px-md-3 pb-0 pb-md-3"
+                                                     style="display:none">
+                                                    {% if user_rate %}
+                                                        <p>کاربر گرامی میتوانید امتیاز خود را برای این محصول ویرایش
+                                                            کنید.</p>
+                                                    {% else %}
+                                                        <p>کاربر گرامی لطفا امتیاز خود را در برای این محصول ثبت کنید.</p>
+                                                    {% endif %}
+
+                                                    <div class="star-rating">
+
+                                                        <input type="hidden" id="star-rating-input" name="rating"
+                                                               value="0">
+
+                                                        <div class="stars-cont d-inline-block">
+                                                            <span onclick="starRate('1')" data-rate="1" class="star">&#9733;</span>
+                                                            <span onclick="starRate('2')" data-rate="2" class="star">&#9733;</span>
+                                                            <span onclick="starRate('3')" data-rate="3" class="star">&#9733;</span>
+                                                            <span onclick="starRate('4')" data-rate="4" class="star">&#9733;</span>
+                                                            <span onclick="starRate('5')" data-rate="5" class="star">&#9733;</span>
+                                                        </div>
+
+                                                        <button class="btn btn-success px-"
+                                                                onclick="addRate({{ product.id }})">ثبت امتیاز
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+                                                <!-- /Rate Tab -->
                                             </div>
                                         </div>
                                     </div>
@@ -477,5 +522,11 @@
     <script src="{% static 'js/product-gallery.js' %}"></script>
 {% endblock %}
 {% block script %}
+    {% if user_rate %}
+        <script>
+            window.onload = starRate('{{ user_rate.rate }}')
+        </script>
+
+    {% endif %}
 
 {% endblock %}

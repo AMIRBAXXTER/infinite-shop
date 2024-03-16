@@ -20,5 +20,4 @@ class CartModelAdmin(admin.ModelAdmin):
 @admin.register(CartItem)
 class CartItemAdmin(admin.ModelAdmin):
     list_display = ('cart', 'product', 'quantity', 'price')
-
-
+    search_fields = ('cart', 'product')

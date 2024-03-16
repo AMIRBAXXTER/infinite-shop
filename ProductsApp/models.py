@@ -77,7 +77,6 @@ class Product(models.Model):
     def off_price(self):
         return self.price - self.final_price
 
-
     class Meta:
         indexes = [
             models.Index(fields=['price']),
@@ -204,3 +203,7 @@ class ProductVisited(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='product_visited', null=True, blank=True,
                              verbose_name='کاربر')
     ip = models.CharField(max_length=100, verbose_name='آی پی')
+
+    class Meta:
+        verbose_name = 'بازدید محصول'
+        verbose_name_plural = 'بازدید محصولات'
