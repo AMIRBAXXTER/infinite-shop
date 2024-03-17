@@ -6,7 +6,6 @@ from django.views.generic import ListView
 from django.http import JsonResponse
 from IndexApp.models import SiteInfo
 from .models import *
-from CartApp.utils.KaveSms import send_sms_normal, send_sms_with_template
 
 
 # Create your views here.
