@@ -91,5 +91,8 @@
     <script>
         tabStyle()
         selectBoxOptions()
+        {% if payment %}
+        	setModal('پرداخت با موفقیت انجام شد', 'success')
+        {% endif %}
     </script>
 {% endblock %}

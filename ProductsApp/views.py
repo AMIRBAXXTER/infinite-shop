@@ -6,6 +6,7 @@ from django.views.generic import ListView
 from django.http import JsonResponse
 from IndexApp.models import SiteInfo
 from .models import *
+from CartApp.utils.KaveSms import send_sms_normal, send_sms_with_template
 
 
 # Create your views here.
@@ -20,8 +21,10 @@ def product_detail(request: HttpRequest, product_id):
     avg = int(product.average_rate)
     if user.is_authenticated:
         user_favorited = product.favorites.filter(user=user).exists()
+        user_rate = ProductRate.objects.filter(product=product, user=user).first()
     else:
         user_favorited = False
+        user_rate = None
     blank_star = 5 - avg
     main_category = product.category.filter(parent=None).first()
     product_images = product.product_images.all().order_by('-is_main')
@@ -29,7 +32,6 @@ def product_detail(request: HttpRequest, product_id):
     product_all_comments = ProductComment.objects.filter(product=product)
     product_color = ProductColor.objects.filter(product=product).first()
     product_properties = ProductProperty.objects.filter(product=product)
-    user_rate = ProductRate.objects.filter(product=product, user=user).first()
     related_products = Product.objects.filter(category__in=product.category.all()).order_by('-created_at').exclude(
         id=product.id).distinct()
 
@@ -162,7 +164,7 @@ def delete_comment(request: HttpRequest):
 def add_product_to_favorite(request):
     product_id = request.GET.get('product_id')
     product: Product = Product.objects.filter(id=product_id).first()
-    user = request.user
+    user: User = request.user
     if not product.favorites.filter(user=user).exists():
         product.favorites.create(user=user)
         return JsonResponse({'liked': True})
@@ -187,5 +189,3 @@ def add_rate(request):
         product_rate.rate = rate
         product_rate.save()
         return JsonResponse({'status': True})
-
-

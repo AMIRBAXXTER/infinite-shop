@@ -24,7 +24,7 @@
                 <div class="title">دسته بندی محصولات</div>
                 <ul>
                     {% for main_category in main_categories %}
-                        <li><a href="{% url 'ProductsApp:products_by_category' main_category.title %}">{{ main_category.title }}</a></li>
+                        <li><a href="{% url 'ProductsApp:products_by_category' main_category.url_title %}">{{ main_category.title }}</a></li>
                     {% endfor %}
                     
                 </ul>

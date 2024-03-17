@@ -430,11 +430,14 @@
                                                     {% if user_rate %}
                                                         <p>کاربر گرامی میتوانید امتیاز خود را برای این محصول ویرایش
                                                             کنید.</p>
+                                                    {% elif not request.user.is_authenticated %}
+                                                        <p>کاربر گرامی برای ثبت امتیاز باید ابتدا ثبت نام کنید.</p>
                                                     {% else %}
-                                                        <p>کاربر گرامی لطفا امتیاز خود را در برای این محصول ثبت کنید.</p>
+                                                        <p>کاربر گرامی لطفا امتیاز خود را در برای این محصول ثبت
+                                                            کنید.</p>
                                                     {% endif %}
 
-                                                    <div class="star-rating">
+                                                    <div class="star-rating {% if not request.user.is_authenticated %}disabled{% endif %}">
 
                                                         <input type="hidden" id="star-rating-input" name="rating"
                                                                value="0">
@@ -447,7 +450,7 @@
                                                             <span onclick="starRate('5')" data-rate="5" class="star">&#9733;</span>
                                                         </div>
 
-                                                        <button class="btn btn-success px-"
+                                                        <button class="btn btn-success {% if not request.user.is_authenticated %}disabled{% endif %}"
                                                                 onclick="addRate({{ product.id }})">ثبت امتیاز
                                                         </button>
 

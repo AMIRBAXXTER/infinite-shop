@@ -6,6 +6,8 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
+from django.utils import timezone
+
 from CartApp.cart import Cart
 from CartApp.models import CartModel
 
@@ -133,6 +135,7 @@ description = "برای ثبت سفارش ابتدا مبلغ را پرداخت 
 # Important: need to edit for realy server.
 CallbackURL = 'http://127.0.0.1:8000/verify/'
 
+
 def send_request(request):
     cart = Cart(request)
     amount = cart.get_payable_price() * 10
@@ -148,7 +151,7 @@ def send_request(request):
     try:
         response = requests.post(ZP_API_REQUEST, data=data, headers=headers, timeout=10)
         if response.status_code == 200:
-            response_data = response.json()  # استفاده از یک نام متغیر جدید برای داده‌های JSON
+            response_data = response.json()
             if response_data['Status'] == 100:
                 return redirect(ZP_API_STARTPAY + response_data['Authority'])
             else:
@@ -174,13 +177,21 @@ def verify(request):
 
     if response.status_code == 200:
         response_data = response.json()
-        if response_data['Status'] == 100:
+        status = request.GET['Status']
+        authority = request.GET['Authority']
+        if status == 'OK':
+            cart = Cart(request)
+            cart.clear()
             cart_model = CartModel.objects.filter(user=request.user, status='در انتظار پرداخت').first()
             cart_model.status = 'پرداخت شده'
+            cart_model.payment_date = timezone.now()
+            cart_model.authority = authority
             cart_model.save()
-            cart = Cart(request)
-            cart.clear(request.user)
-            return render(request, 'cart_app/cart.html', {'cart': cart})
+            context = {
+                'cart': cart_model,
+                'payment': True
+            }
+            return render(request, 'cart_app/payment-confirm.html', context)
         else:
-            return JsonResponse({'status': False, 'code': str(response_data['Status'])})
+            return redirect('CartApp:cart')
     return redirect('CartApp:cart')

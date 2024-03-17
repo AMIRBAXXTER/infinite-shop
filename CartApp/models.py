@@ -19,9 +19,9 @@ class CartModel(models.Model):
     status = models.CharField(max_length=25, default='در انتظار پرداخت', choices=status, verbose_name='وضعیت')
     final_price = models.PositiveIntegerField(default=0, verbose_name='مبلغ')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ سفارش')
+    authority = models.CharField(max_length=50, null=True, blank=True, verbose_name='شماره تراکنش')
     payment_date = models.DateTimeField(null=True, blank=True, verbose_name='تاریخ پرداخت')
     delivery_date = models.DateTimeField(null=True, blank=True, verbose_name='تاریخ ارسال')
-
 
     class Meta:
         verbose_name = 'سفارش'
@@ -47,7 +47,6 @@ class CartItem(models.Model):
     color_stock = models.IntegerField(verbose_name='موجودی رنگ')
     weight = models.IntegerField(verbose_name='وزن')
     quantity = models.IntegerField(default=1, verbose_name='تعداد')
-
 
     class Meta:
         verbose_name = 'آیتم سفارش'

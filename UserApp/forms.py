@@ -165,11 +165,14 @@ class UserProfileForm(forms.ModelForm):
 
     def clean_card_number(self):
         card_number = self.cleaned_data.get('card_number')
-        if len(card_number) != 16:
-            raise forms.ValidationError('شماره کارت باید 16 رقم باشد.')
-        if not card_number.isdigit():
-            raise forms.ValidationError('شماره کارت باید فقط شامل اعداد باشد.')
-        return card_number
+        if card_number is not None:
+            if len(card_number) != 16:
+                raise forms.ValidationError('شماره کارت باید 16 رقم باشد.')
+            if not card_number.isdigit():
+                raise forms.ValidationError('شماره کارت باید فقط شامل اعداد باشد.')
+            return card_number
+        else:
+            return ''
 
 
 class PasswordChangeForm(forms.Form):

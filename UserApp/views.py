@@ -24,7 +24,7 @@ def user_login(request):
             if user:
                 if user.is_active:
                     login(request, user)
-                    cart_model = CartModel.objects.filter(user=user, status='1').first()
+                    cart_model = CartModel.objects.filter(user=user, status='در انتظار پرداخت').first()
                     products = CartItem.objects.filter(cart=cart_model)
                     cart = Cart(request)
                     cart.clear()
