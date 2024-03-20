@@ -77,6 +77,12 @@ class Product(models.Model):
     def off_price(self):
         return self.price - self.final_price
 
+    def delete(self, *args, **kwargs):
+        for img in self.product_images.all():
+            storage, path = img.image.storage, img.image.path
+            storage.delete(path)
+        super().delete(*args, **kwargs)
+
     class Meta:
         indexes = [
             models.Index(fields=['price']),
@@ -108,7 +114,8 @@ class ProductProperty(models.Model):
 
 class ProductImage(models.Model):
     title = models.CharField(max_length=50, verbose_name='عنوان')
-    image = ResizedImageField(upload_to='product_images/', blank=True, null=True, verbose_name='تصویر')
+    image = ResizedImageField(upload_to='product_images/', force_format='webp', quality=100, blank=True, null=True,
+                              verbose_name='تصویر')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_images', verbose_name='محصول')
     is_main = models.BooleanField(default=False, verbose_name=' تصویر اصلی')
 
@@ -120,6 +127,11 @@ class ProductImage(models.Model):
         if self.is_main:
             ProductImage.objects.filter(product=self.product).exclude(id=self.id).update(is_main=False)
         super(ProductImage, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        storage, path = self.image.storage, self.image.path
+        storage.delete(path)
+        super().delete(*args, **kwargs)
 
     def image_preview(self):
         return format_html(' <img src="{0}" width="150" height="150">'.format(self.image.url))
