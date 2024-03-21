@@ -134,9 +134,14 @@
                                 </div>
                                 {% if product.is_active %}
                                     <div class="encode4365gbf265g43d-container py-2">
-                                        <span class="pre-encode4365gbf265g43d">{{ product.price|intcomma:False }}</span>
-                                        <span class="encode4365gbf265g43d">{{ product.final_price|intcomma:False }} <span>تومان</span></span>
-                                        <div class="bg-danger m-auto d-inline-block px-1 rounded-2 text-light">{{ product.off_percent }}%</div>
+                                        {% if product.off_percent %}
+                                            <span class="pre-encode4365gbf265g43d">{{ product.price|intcomma:False }}</span>
+                                            <span class="encode4365gbf265g43d">{{ product.final_price|intcomma:False }} <span>تومان</span></span>
+                                            <div class="bg-danger m-auto d-inline-block px-1 rounded-2 text-light">{{ product.off_percent }}%</div>
+                                        {% else %}
+                                            <span class="encode4365gbf265g43d">{{ product.final_price|intcomma:False }} <span>تومان</span></span>
+                                        {% endif %}
+
                                     </div>
                                 {% else %}
                                     <span class="alert alert-danger p-1 m-5">ناموجود</span>
@@ -159,7 +164,7 @@
                                         <div class="col-12 col-sm-4 col-lg-3">
                                             <div class="variable">
                                                 <div class="sub-title pt-2 pb-3">رنگ</div>
-                                                {% for color in product.product_color.all %}
+                                                {% for color in product_all_colors %}
                                                     <span class="color-variable rounded-circle border-2"
                                                           data-color="{{ color.color }}"><a
                                                             class="rounded-circle"
