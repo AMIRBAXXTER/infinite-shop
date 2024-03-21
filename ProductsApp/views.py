@@ -30,8 +30,9 @@ def product_detail(request: HttpRequest, product_id):
     product_comments = ProductComment.objects.filter(product=product, parent=None).order_by('-created_at')
     product_all_comments = ProductComment.objects.filter(product=product)
     product_color = ProductColor.objects.filter(product=product).first()
+    product_all_colors = ProductColor.objects.filter(product=product, stock__gt=0).all()
     product_properties = ProductProperty.objects.filter(product=product)
-    related_products = Product.objects.filter(category__in=product.category.all()).order_by('-created_at').exclude(
+    related_products = Product.objects.filter(category__in=product.category.all(), is_active=True).order_by('-created_at').exclude(
         id=product.id).distinct()
 
     if request.method == 'GET':
@@ -48,6 +49,7 @@ def product_detail(request: HttpRequest, product_id):
         'product_comments': product_comments,
         'product_all_comments': product_all_comments,
         'product_color': product_color,
+        'product_all_colors': product_all_colors,
         'product_properties': product_properties,
         'user_rate': user_rate,
         'related_products': related_products,
