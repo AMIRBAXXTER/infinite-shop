@@ -1,5 +1,3 @@
-from audioop import reverse
-
 from django.conf import settings
 import requests
 import json

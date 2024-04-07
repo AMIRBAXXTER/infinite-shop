@@ -214,7 +214,7 @@ class ProductVisited(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_visited', verbose_name='محصول')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='product_visited', null=True, blank=True,
                              verbose_name='کاربر')
-    ip = models.CharField(max_length=100, verbose_name='آی پی')
+    ip = models.GenericIPAddressField(max_length=100, verbose_name='آی پی')
 
     class Meta:
         verbose_name = 'بازدید محصول'
