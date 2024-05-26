@@ -9,11 +9,5 @@ ENV PATH="/PY/BIN:$PATH"
 COPY requirements.txt /code/
 COPY . /code/
 
-ENV POSTGRES_DB=infinite-shop
-ENV POSTGRES_USER=shop_admin
-ENV POSTGRES_PASSWORD=12345678
-ENV POSTGRES_HOST=postgres
-ENV POSTGRES_PORT=5432
-
 RUN pip install -U pip
 RUN pip install -r requirements.txt
