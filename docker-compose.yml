@@ -3,7 +3,7 @@ services:
     container_name: postgres
     image: postgres:latest
     environment:
-      - POSTGRES_DB=infinite-shop
+      - POSTGRES_DB=infinite_shop
       - POSTGRES_USER=shop_admin
       - POSTGRES_PASSWORD=12345678
     networks:
@@ -14,9 +14,12 @@ services:
     volumes:
       - data:/var/lib/postgresql/_data
   app:
-    build: .
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    build:
+      context: ./
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     container_name: app
+    environment:
+      - DB_HOST=postgres
     volumes:
       - .:/code/
     depends_on:

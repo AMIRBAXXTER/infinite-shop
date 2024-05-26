@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import HttpRequest, Http404
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.http import JsonResponse
 from IndexApp.models import SiteInfo
 from .models import *
@@ -18,12 +18,8 @@ def product_detail(request: HttpRequest, product_id):
     if product is None:
         raise Http404
     avg = int(product.average_rate)
-    if user.is_authenticated:
-        user_favorited = product.favorites.filter(user=user).exists()
-        user_rate = ProductRate.objects.filter(product=product, user=user).first()
-    else:
-        user_favorited = False
-        user_rate = None
+    user_favorited = product.favorites.filter(user=user).exists() if user.is_authenticated else False
+    user_rate = ProductRate.objects.filter(product=product, user=user).first() if user.is_authenticated else None
     blank_star = 5 - avg
     main_category = product.category.filter(parent=None).first()
     product_images = product.product_images.all().order_by('-is_main')
@@ -32,7 +28,8 @@ def product_detail(request: HttpRequest, product_id):
     product_color = ProductColor.objects.filter(product=product).first()
     product_all_colors = ProductColor.objects.filter(product=product, stock__gt=0).all()
     product_properties = ProductProperty.objects.filter(product=product)
-    related_products = Product.objects.filter(category__in=product.category.all(), is_active=True).order_by('-created_at').exclude(
+    related_products = Product.objects.filter(category__in=product.category.all(), is_active=True).order_by(
+        '-created_at').exclude(
         id=product.id).distinct()
 
     if request.method == 'GET':
@@ -145,7 +142,7 @@ def product_comment(request: HttpRequest):
 
 
 @login_required
-def delete_comment(request: HttpRequest):
+def delete_comment(request):
     comment_id = request.GET.get('comment_id')
     comment = ProductComment.objects.filter(id=comment_id).first()
     if not comment:
